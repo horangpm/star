@@ -189,10 +189,10 @@ h1.logo { font-family:'Cinzel',serif; font-size:clamp(2rem,6vw,3rem); font-weigh
 
 /* ── PRINT MEDIA QUERY ── */
 @media print {
+  @page { margin: 0; size: auto; }
   body { background: #ffffff !important; overflow: visible !important; margin:0 !important; padding:0 !important; }
   body > *:not(#pdf-root) { display: none !important; }
-  #pdf-root { display: block !important; position: static !important; width: 100% !important; margin: 0 !important; background:#ffffff !important; color:#334155 !important; }
-  @page { margin: 12mm; size: auto; }
+  #pdf-root { display: block !important; position: static !important; width: 100% !important; margin: 0 !important; padding: 15mm 15mm 20mm !important; box-sizing: border-box !important; background:#ffffff !important; color:#334155 !important; }
 }
 .pdf-pb { break-before:page; page-break-before:always; }
 .pdf-h1 { font-family:'Cinzel',serif; font-size:1.8rem; color:#f0f0ff; text-align:center; margin-bottom:6px; }
