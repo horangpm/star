@@ -1,0 +1,986 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>반려동물 사주궁합 — 우리의 인연</title>
+<meta name="description" content="명리학으로 풀어보는 나와 반려동물의 운명적인 궁합. 지금 바로 확인해보세요.">
+<meta property="og:title" content="반려동물 사주궁합 — 우리의 인연">
+<meta property="og:description" content="내 사주와 반려동물의 기운이 얼마나 깊이 연결되어 있는지 명리학으로 풀어드립니다.">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FDF8F0;
+    --ink: #1A1208;
+    --ink-light: #4A3F2F;
+    --ink-muted: #8A7D6A;
+    --gold: #C4933A;
+    --gold-light: #F0D89A;
+    --gold-pale: #FBF3DC;
+    --red-accent: #C44B2A;
+    --green-accent: #3A7A55;
+    --border: rgba(196,147,58,0.25);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Noto Sans KR', sans-serif;
+    overflow-x: hidden;
+  }
+
+  /* ─── HERO ─────────────────────────────── */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 80px 24px 60px;
+    position: relative;
+    background: var(--cream);
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(196,147,58,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(196,147,58,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-block;
+    font-family: 'Noto Serif KR', serif;
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    color: var(--gold);
+    border: 1px solid var(--gold);
+    padding: 6px 16px;
+    margin-bottom: 36px;
+    text-transform: uppercase;
+  }
+
+  .hero-eyebrow {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(13px, 2.5vw, 16px);
+    color: var(--ink-muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+  }
+
+  .hero-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(36px, 8vw, 72px);
+    font-weight: 900;
+    line-height: 1.15;
+    color: var(--ink);
+    margin-bottom: 12px;
+  }
+
+  .hero-title em {
+    font-style: normal;
+    color: var(--gold);
+    position: relative;
+  }
+
+  .hero-sub {
+    font-size: clamp(15px, 2.5vw, 18px);
+    color: var(--ink-light);
+    line-height: 1.7;
+    max-width: 540px;
+    margin: 24px auto 48px;
+    font-weight: 300;
+  }
+
+  .hero-cta {
+    display: inline-block;
+    background: var(--ink);
+    color: var(--gold-light);
+    font-family: 'Noto Serif KR', serif;
+    font-size: 16px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    padding: 18px 48px;
+    text-decoration: none;
+    position: relative;
+    transition: all 0.3s ease;
+  }
+
+  .hero-cta:hover {
+    background: var(--gold);
+    color: var(--ink);
+    transform: translateY(-2px);
+  }
+
+  .hero-cta::after {
+    content: '';
+    position: absolute;
+    inset: -4px;
+    border: 1px solid var(--gold);
+    pointer-events: none;
+    transition: all 0.3s ease;
+  }
+
+  .hero-price-note {
+    margin-top: 20px;
+    font-size: 13px;
+    color: var(--ink-muted);
+    letter-spacing: 0.05em;
+  }
+
+  .hero-price-note strong {
+    color: var(--red-accent);
+    font-size: 15px;
+  }
+
+  .hero-scroll {
+    margin-top: 60px;
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: var(--ink-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    animation: bounce 2s ease-in-out infinite;
+  }
+
+  .scroll-line {
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, var(--gold), transparent);
+  }
+
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(6px); }
+  }
+
+  /* ─── DIVIDER ─── */
+  .ornament-divider {
+    text-align: center;
+    padding: 12px 0;
+    color: var(--gold);
+    font-size: 20px;
+    letter-spacing: 0.4em;
+    opacity: 0.6;
+  }
+
+  /* ─── SECTION BASE ─── */
+  section {
+    padding: 80px 24px;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    font-family: 'Noto Serif KR', serif;
+  }
+
+  .section-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(26px, 5vw, 40px);
+    font-weight: 900;
+    line-height: 1.3;
+    color: var(--ink);
+    margin-bottom: 20px;
+  }
+
+  .section-body {
+    font-size: 16px;
+    color: var(--ink-light);
+    line-height: 1.85;
+    font-weight: 300;
+    max-width: 600px;
+  }
+
+  /* ─── HOOK SECTION ─── */
+  .hook-section {
+    background: var(--ink);
+    padding: 80px 24px;
+    text-align: center;
+  }
+
+  .hook-inner {
+    max-width: 760px;
+    margin: 0 auto;
+  }
+
+  .hook-quote {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(21px, 4.8vw, 37px);
+    font-weight: 700;
+    color: var(--gold-light);
+    line-height: 1.6;
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .hook-quote p {
+    margin: 0;
+    text-align: center;
+    max-width: 680px;
+  }
+
+  .hook-quote span {
+    color: var(--gold);
+  }
+
+  .hook-sub {
+    font-size: 15px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.8;
+    font-weight: 300;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+
+  /* ─── SAMPLE REPORT ─── */
+  .report-section {
+    background: var(--gold-pale);
+    padding: 80px 24px;
+  }
+
+  .report-inner {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+
+  .report-card {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 40px;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .report-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(196,147,58,0.15);
+  }
+
+  .report-card::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+  }
+
+  .report-header {
+    text-align: center;
+    margin-bottom: 36px;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .report-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink-muted);
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+  }
+
+  .score-big {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(56px, 12vw, 96px);
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+  }
+
+  .score-label {
+    font-size: 14px;
+    color: var(--ink-muted);
+    letter-spacing: 0.1em;
+    margin-top: 8px;
+  }
+
+  .report-tagline {
+    margin-top: 16px;
+    font-family: 'Noto Serif KR', serif;
+    font-size: 15px;
+    color: var(--ink-light);
+    font-style: italic;
+  }
+
+  .ohaeng-row {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    gap: 16px;
+    align-items: center;
+    margin: 28px 0;
+  }
+
+  .ohaeng-card {
+    background: var(--gold-pale);
+    border: 1px solid var(--border);
+    padding: 20px;
+    text-align: center;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .ohaeng-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(196,147,58,0.1);
+  }
+
+  .ohaeng-symbol {
+    font-size: 32px;
+    margin-bottom: 8px;
+  }
+
+  .ohaeng-name {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 6px;
+  }
+
+  .ohaeng-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    justify-content: center;
+    margin-top: 8px;
+  }
+
+  .tag {
+    font-size: 11px;
+    background: var(--ink);
+    color: var(--gold-light);
+    padding: 3px 8px;
+    letter-spacing: 0.05em;
+  }
+
+  .vs-badge {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: var(--ink-muted);
+    text-align: center;
+  }
+
+  .vs-badge .arrow {
+    display: block;
+    font-size: 20px;
+    color: var(--gold);
+    margin: 4px 0;
+  }
+
+  .report-sections {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  @media (max-width: 600px) {
+    .report-sections { grid-template-columns: 1fr; }
+    .ohaeng-row { grid-template-columns: 1fr; }
+    .vs-badge .arrow { transform: rotate(90deg); display: inline-block; }
+  }
+
+  .report-item {
+    border-left: 3px solid var(--gold);
+    padding-left: 14px;
+  }
+
+  .report-item-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 12px;
+    letter-spacing: 0.1em;
+    color: var(--ink-muted);
+    margin-bottom: 6px;
+  }
+
+  .report-item-body {
+    font-size: 13px;
+    color: var(--ink-light);
+    line-height: 1.65;
+    font-weight: 300;
+  }
+
+  /* ─── HOW ─── */
+  .steps-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 32px;
+    margin-top: 48px;
+  }
+
+  .step {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .step-num {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 48px;
+    font-weight: 900;
+    color: var(--gold);
+    line-height: 1;
+    opacity: 0.4;
+  }
+
+  .step-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .step-body {
+    font-size: 14px;
+    color: var(--ink-light);
+    line-height: 1.75;
+    font-weight: 300;
+  }
+
+  /* ─── SOCIAL PROOF ─── */
+  .reviews-section {
+    background: var(--ink);
+    padding: 80px 24px;
+  }
+
+  .reviews-inner {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  .reviews-label {
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    font-family: 'Noto Serif KR', serif;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  .reviews-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(24px, 4vw, 36px);
+    font-weight: 900;
+    color: var(--gold-light);
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 20px;
+  }
+
+  .review-card {
+    border: 1px solid rgba(196,147,58,0.2);
+    padding: 28px 24px;
+    position: relative;
+    transition: transform 0.3s ease, border-color 0.3s ease;
+  }
+
+  .review-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(196,147,58,0.5);
+  }
+
+  .review-stars {
+    color: var(--gold);
+    font-size: 14px;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+  }
+
+  .review-text {
+    font-size: 14px;
+    color: rgba(255,255,255,0.75);
+    line-height: 1.75;
+    font-weight: 300;
+    font-family: 'Noto Serif KR', serif;
+    font-style: italic;
+    margin-bottom: 16px;
+  }
+
+  .review-author {
+    font-size: 12px;
+    color: var(--gold);
+    letter-spacing: 0.08em;
+  }
+
+  .review-pet {
+    font-size: 11px;
+    color: rgba(255,255,255,0.35);
+    margin-top: 2px;
+  }
+
+  /* ─── PRICE ─── */
+  .price-section {
+    background: var(--gold-pale);
+    padding: 80px 24px;
+    text-align: center;
+  }
+
+  .price-inner {
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  .price-box {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 48px 40px;
+    position: relative;
+    margin: 40px 0;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .price-box:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(196,147,58,0.15);
+  }
+
+  .price-box::before {
+    content: '';
+    position: absolute;
+    top: -1px; left: -1px; right: -1px;
+    height: 4px;
+    background: linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+  }
+
+  .price-label {
+    font-size: 12px;
+    letter-spacing: 0.15em;
+    color: var(--ink-muted);
+    font-family: 'Noto Serif KR', serif;
+    margin-bottom: 12px;
+  }
+
+  .price-amount {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(52px, 12vw, 80px);
+    font-weight: 900;
+    color: var(--ink);
+    line-height: 1;
+  }
+
+  .price-amount sup {
+    font-size: 0.35em;
+    vertical-align: super;
+    color: var(--ink-muted);
+  }
+
+  .price-desc {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-top: 12px;
+    line-height: 1.7;
+    font-weight: 300;
+  }
+
+  .price-includes {
+    margin-top: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    text-align: left;
+  }
+
+  .include-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    color: var(--ink-light);
+    font-weight: 300;
+    line-height: 1.5;
+  }
+
+  .include-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--gold);
+    margin-top: 7px;
+    flex-shrink: 0;
+  }
+
+  /* ─── FINAL CTA ─── */
+  .final-cta {
+    background: var(--ink);
+    padding: 100px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .final-cta::before {
+    content: '運命';
+    position: absolute;
+    font-family: 'Noto Serif KR', serif;
+    font-size: 280px;
+    font-weight: 900;
+    color: rgba(196,147,58,0.04);
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    white-space: nowrap;
+  }
+
+  .final-inner {
+    max-width: 640px;
+    margin: 0 auto;
+    position: relative;
+  }
+
+  .final-title {
+    font-family: 'Noto Serif KR', serif;
+    font-size: clamp(28px, 6vw, 52px);
+    font-weight: 900;
+    color: var(--gold-light);
+    line-height: 1.3;
+    margin-bottom: 24px;
+  }
+
+  .final-title span {
+    color: var(--gold);
+  }
+
+  .final-body {
+    font-size: 16px;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.8;
+    font-weight: 300;
+    margin-bottom: 48px;
+  }
+
+  .final-btn {
+    display: inline-block;
+    background: var(--gold);
+    color: var(--ink);
+    font-family: 'Noto Serif KR', serif;
+    font-size: 18px;
+    font-weight: 900;
+    letter-spacing: 0.08em;
+    padding: 22px 60px;
+    text-decoration: none;
+    transition: all 0.3s ease;
+  }
+
+  .final-btn:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+  }
+
+  .final-note {
+    margin-top: 20px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.3);
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: #0F0B06;
+    padding: 40px 24px;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(255,255,255,0.25);
+    line-height: 2;
+    letter-spacing: 0.05em;
+  }
+
+  /* ─── FLOATING ACTION BUTTON ─── */
+  .fab {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--gold);
+    color: var(--ink);
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 28px;
+    text-decoration: none;
+    box-shadow: 0 6px 16px rgba(196,147,58,0.4);
+    z-index: 100;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+  }
+
+  .fab:hover {
+    transform: translateY(-4px) scale(1.05);
+    box-shadow: 0 10px 24px rgba(196,147,58,0.6);
+  }
+
+  @media (max-width: 600px) {
+    .fab {
+      width: 56px;
+      height: 56px;
+      font-size: 24px;
+      bottom: 20px;
+      right: 20px;
+    }
+  }
+
+  /* ─── ANIMATIONS ─── */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(24px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<!-- ═══ HERO ═══════════════════════════════════════════════ -->
+<div class="hero">
+  <div class="hero-badge">🐾 Pet Saju · 반려동물 사주궁합</div>
+  <p class="hero-eyebrow">우연이라 부르기엔 너무 완벽한 만남</p>
+  <h1 class="hero-title">
+    우리가 만난 건<br>
+    <em>운명</em>이었을까?
+  </h1>
+  <p class="hero-sub">
+    내 사주와 반려동물의 기운이<br>
+    얼마나 깊이 연결되어 있는지<br>
+    명리학으로 풀어드립니다.
+  </p>
+  <a href="https://open.kakao.com/o/g1K6qNxi" class="hero-cta" target="_blank" rel="noopener noreferrer">
+    지금 궁합 보러가기 →
+  </a>
+  <p class="hero-price-note">단 <strong>1,900원</strong>으로 전체 보고서 확인</p>
+  <div class="hero-scroll">
+    <div class="scroll-line"></div>
+    scroll
+  </div>
+</div>
+
+<!-- ═══ HOOK ════════════════════════════════════════════════ -->
+<div class="hook-section">
+  <div class="hook-inner fade-in">
+    <div class="hook-quote">
+      <p>"왜 이 아이는 유독 <span>나한테만</span> 이렇게 다를까?"</p>
+      <p>"처음 눈이 마주쳤을 때 뭔가 <span>이상하게</span> 설레었는데..."</p>
+    </div>
+    <p class="hook-sub">
+      느낌은 맞았습니다.<br>
+      오행(五行)은 거짓말을 하지 않거든요.
+    </p>
+  </div>
+</div>
+
+<!-- ═══ SAMPLE REPORT ═══════════════════════════════════════ -->
+<div class="report-section">
+  <div class="report-inner">
+    <div class="section-label" style="text-align:center; margin-bottom:12px;">Sample Report</div>
+    <h2 class="section-title fade-in" style="text-align:center; font-size:clamp(22px,4vw,34px);">이런 보고서가 나옵니다</h2>
+    <p class="section-body fade-in" style="margin: 0 auto 40px; text-align:center;">실제 보고서 미리보기 — 함쌤 & 초코</p>
+
+    <div class="report-card fade-in">
+      <div class="report-header">
+        <div class="report-title">총합 궁합도 (總合 宮合度)</div>
+        <div class="score-big">88</div>
+        <div class="score-label">점 · 100점 만점</div>
+        <p class="report-tagline">"마치 오래된 거목과 그 아래 쉬어가는 작은 새처럼,<br>서로에게 안식을 주는 평온한 인연입니다."</p>
+      </div>
+
+      <div class="ohaeng-row">
+        <div class="ohaeng-card">
+          <div class="ohaeng-symbol">🔥</div>
+          <div class="ohaeng-name">화(火)의 기운</div>
+          <div style="font-size:12px; color:var(--ink-muted); margin-bottom:8px;">반려인 · 함쌤</div>
+          <div class="ohaeng-tags">
+            <span class="tag">#따뜻함</span>
+            <span class="tag">#포용력</span>
+            <span class="tag">#열정</span>
+          </div>
+        </div>
+        <div class="vs-badge">
+          목생화<br>
+          <span class="arrow">⟷</span>
+          相生
+        </div>
+        <div class="ohaeng-card">
+          <div class="ohaeng-symbol">🌳</div>
+          <div class="ohaeng-name">목(木)의 기운</div>
+          <div style="font-size:12px; color:var(--ink-muted); margin-bottom:8px;">반려동물 · 초코</div>
+          <div class="ohaeng-tags">
+            <span class="tag">#순수함</span>
+            <span class="tag">#성장</span>
+            <span class="tag">#충성심</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="report-sections">
+        <div class="report-item">
+          <div class="report-item-title">✦ 긍정적 시너지 (相生)</div>
+          <div class="report-item-body">보호자의 정서적 안정감이 반려동물의 분리불안을 억제하는 긍정적 효과. 함께하는 시간이 양측의 스트레스를 크게 낮춥니다.</div>
+        </div>
+        <div class="report-item">
+          <div class="report-item-title">⚠ 주의사항 (相剋)</div>
+          <div class="report-item-body">목(木)의 기운이 강한 반려동물은 억압을 힘들어하므로 긍정 강화 훈련이 필요합니다. 화(火)의 기운을 지닌 보호자님은 가끔 급한 성향을 주의하세요.</div>
+        </div>
+        <div class="report-item">
+          <div class="report-item-title">🌿 건강 케어 조언</div>
+          <div class="report-item-body">간과 담낭 계열의 장기 기능이 약해질 우려가 있으므로, 고단백 식단보다는 균형 잡힌 영양소 섭취를 권장합니다.</div>
+        </div>
+        <div class="report-item">
+          <div class="report-item-title">✨ 전문가의 조언</div>
+          <div class="report-item-body">"서로의 눈을 지긋이 바라보며 건네는 부드러운 말 한마디가, 오늘 하루 두 생명의 기운을 가장 아름답게 순환시켜 줄 것입니다."</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ HOW IT WORKS ════════════════════════════════════════ -->
+<section class="fade-in">
+  <div class="section-label">How it works</div>
+  <h2 class="section-title">3분이면 충분합니다</h2>
+  <p class="section-body">복잡한 사주 지식은 전혀 필요 없어요.<br>이름과 생년월일만 있으면 됩니다.</p>
+
+  <div class="steps-grid">
+    <div class="step">
+      <div class="step-num">01</div>
+      <div class="step-title">내 정보 입력</div>
+      <div class="step-body">이름, 성별, 생년월일, 태어난 시간을 입력합니다. 시간을 모르셔도 괜찮아요.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">02</div>
+      <div class="step-title">반려동물 정보 입력</div>
+      <div class="step-body">강아지, 고양이, 토끼, 햄스터 등 종류와 이름, 생년월일 또는 입양일을 입력합니다.</div>
+    </div>
+    <div class="step">
+      <div class="step-num">03</div>
+      <div class="step-title">보고서 수령</div>
+      <div class="step-body">AI가 음양오행 이론으로 두 사주를 분석해 맞춤형 5섹션 보고서를 즉시 발행합니다.</div>
+    </div>
+  </div>
+</section>
+
+<div class="ornament-divider">✦ ✦ ✦</div>
+
+<!-- ═══ REVIEWS ══════════════════════════════════════════════ -->
+<div class="reviews-section">
+  <div class="reviews-inner">
+    <div class="reviews-label">Real Reviews</div>
+    <h2 class="reviews-title fade-in">이미 받아보신 분들의 반응</h2>
+    <div class="reviews-grid">
+      <div class="review-card fade-in">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"우리 고양이가 왜 나한테만 이렇게 붙어있는지 이제 이해됐어요. 목생화라니까요 진짜로요ㅋㅋㅋ"</p>
+        <div class="review-author">@hye_cat_lover</div>
+        <div class="review-pet">고양이 '나비' 보호자 · 화(火)의 기운</div>
+      </div>
+      <div class="review-card fade-in">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">"보고서에 건강 케어 조언 나오는데 그게 진짜 딱 맞아서 소름... 관절 조심하라고 했는데 이미 병원 다니고 있었거든요."</p>
+        <div class="review-author">@daehun_and_bori</div>
+        <div class="review-pet">강아지 '보리' 보호자 · 수(水)의 기운</div>
+      </div>
+      <div class="review-card fade-in">
+        <div class="review-stars">★★★★☆</div>
+        <p class="review-text">"PDF 다운로드 되는거 몰랐는데 저장해놓고 두고두고 봐요. 1,900원짜리가 이렇게 뿌듯할 줄 몰랐음"</p>
+        <div class="review-author">@sso_rabbit</div>
+        <div class="review-pet">토끼 '쏘' 보호자 · 금(金)의 기운</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PRICE ════════════════════════════════════════════════ -->
+<div class="price-section">
+  <div class="price-inner">
+    <div class="section-label">Pricing</div>
+    <h2 class="section-title fade-in" style="text-align:center;">딱 한 번,<br>평생 간직할 인연 보고서</h2>
+
+    <div class="price-box fade-in">
+      <div class="price-label">전체 보고서 발행 1회</div>
+      <div class="price-amount"><sup>₩</sup>1,900</div>
+      <div class="price-desc">커피 한 잔 값으로<br>운명적 인연을 확인하세요</div>
+      <div class="price-includes">
+        <div class="include-item"><div class="include-dot"></div>오행 분석 — 반려인 & 반려동물 기운 분석</div>
+        <div class="include-item"><div class="include-dot"></div>성향 및 상호작용 — 인연의 끈 해석</div>
+        <div class="include-item"><div class="include-dot"></div>상세 궁합 — 시너지 & 주의사항</div>
+        <div class="include-item"><div class="include-dot"></div>건강운 및 케어 조언 — 현재 & 미래</div>
+        <div class="include-item"><div class="include-dot"></div>전문가의 조언 — 명리학 기반 메시지</div>
+        <div class="include-item"><div class="include-dot"></div>PDF 보고서 다운로드 포함</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ FINAL CTA ════════════════════════════════════════════ -->
+<div class="final-cta">
+  <div class="final-inner">
+    <h2 class="final-title fade-in">
+      그 아이가 당신 곁에 온 건<br>
+      <span>우연이 아닙니다</span>
+    </h2>
+    <p class="final-body fade-in">
+      명리학은 수천 년 동안 인연을 설명해왔습니다.<br>
+      지금, 당신과 그 아이의 이야기를 확인해보세요.
+    </p>
+    <a href="https://open.kakao.com/o/g1K6qNxi" class="final-btn fade-in" target="_blank" rel="noopener noreferrer">
+      🐾 카카오 상담하러 가기
+    </a>
+    <p class="final-note">카카오 채널 문의 · 1,900원 · PDF 포함</p>
+  </div>
+</div>
+
+<!-- ═══ FOOTER ═══════════════════════════════════════════════ -->
+<footer>
+  <p>© 2026 HAM SSAM _ PET SAJU</p>
+  <p>본 서비스는 명리학의 음양오행 이론을 바탕으로 작성되며, 참고 및 조언 목적으로 제공됩니다.</p>
+</footer>
+
+<!-- Floating Action Button -->
+<a href="https://open.kakao.com/o/g1K6qNxi" class="fab fade-in" target="_blank" rel="noopener noreferrer" title="카카오톡 상담하기">
+  💬
+</a>
+
+<script>
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('visible'), i * 80);
+    }
+  });
+}, { threshold: 0.12 });
+
+document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
