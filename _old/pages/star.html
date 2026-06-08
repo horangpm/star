@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>별자리차트 — HAM SSAM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <style>
+    .hero-star { background: linear-gradient(135deg, var(--gold), var(--pink)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .zodiac-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; margin: 48px 0; }
+    .zodiac-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 16px 12px; text-align: center; cursor: pointer; transition: all 0.3s ease; }
+    .zodiac-item:hover { border-color: var(--border-hover); background: var(--bg-card-hover); transform: translateY(-4px); }
+    .zodiac-item:hover .zodiac-symbol { text-shadow: 0 0 20px rgba(251,191,36,0.6); }
+    .zodiac-symbol { font-size: 1.8rem; display: block; margin-bottom: 6px; }
+    .zodiac-name { font-size: 0.78rem; color: var(--text-secondary); letter-spacing: 0.05em; display: block; margin-bottom: 2px; }
+    .zodiac-date { font-size: 0.68rem; color: var(--text-muted); letter-spacing: 0.02em; }
+    .zodiac-item.active { border-color: rgba(251,191,36,0.5); background: rgba(251,191,36,0.06); }
+    #zodiacInfo { display: none; background: rgba(251,191,36,0.06); border: 1px solid rgba(251,191,36,0.25); border-radius: 16px; padding: 32px; margin-bottom: 48px; }
+    .zodiac-info-header { display: flex; align-items: center; gap: 16px; margin-bottom: 16px; }
+    .zodiac-info-symbol { font-size: 2.5rem; }
+    .zodiac-info-title { font-family: var(--font-serif); font-size: 1.3rem; font-weight: 600; color: var(--gold-light); }
+    .zodiac-info-date { font-size: 0.82rem; color: var(--text-muted); margin-top: 4px; }
+    .zodiac-info-desc { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.9; margin-bottom: 12px; }
+    .zodiac-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+    .zodiac-tag { background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.2); color: var(--gold-light); font-size: 0.72rem; padding: 4px 12px; border-radius: 20px; letter-spacing: 0.05em; }
+    .info-card:nth-child(1) .info-card-num { color: rgba(251,191,36,0.4); }
+    .info-card:nth-child(2) .info-card-num { color: rgba(244,114,182,0.4); }
+    .info-card:nth-child(3) .info-card-num { color: rgba(96,165,250,0.4); }
+  </style>
+</head>
+<body>
+  <canvas id="cosmos"></canvas>
+  <div class="particles" id="particles"></div>
+
+  <header class="site-header">
+    <div class="logo">
+      <a href="../index.html" style="display:flex;flex-direction:column;gap:2px;">
+        <span class="logo-en">HAM SSAM</span>
+        <span class="logo-ko">함쌤</span>
+      </a>
+    </div>
+    <nav class="gnav">
+      <a href="shape.html">도형심리</a>
+      <a href="star.html" style="color:var(--gold-light)">별자리</a>
+      <a href="saju.html">사주</a>
+      <a href="https://open.kakao.com/o/gbdfKQai" target="_blank" class="nav-cta">상담 신청</a>
+    </nav>
+    <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="../index.html">← 홈으로</a>
+    <a href="shape.html">도형심리분석</a>
+    <a href="star.html">별자리차트</a>
+    <a href="saju.html">운명비밀사주</a>
+    <a href="https://open.kakao.com/o/gbdfKQai" target="_blank" class="mobile-cta">💬 카카오 상담 신청</a>
+  </div>
+
+  <section class="page-hero">
+    <p class="page-hero-label">ASTROLOGY CHART</p>
+    <h1><span class="hero-star">별자리차트</span></h1>
+    <p>태어난 순간 하늘이 그린 별자리 지도.<br/>12궁의 배열이 전하는 당신만의 운명 청사진.</p>
+  </section>
+
+  <div class="content-section">
+    <div style="text-align:center; margin-bottom:16px;">
+      <div class="section-label" style="display:inline-block;">YOUR SIGN</div>
+    </div>
+    <h2 style="text-align:center; font-family:var(--font-serif); font-size:1.5rem; font-weight:600; margin-bottom:8px;">당신의 별자리를 찾아보세요</h2>
+    <p style="text-align:center; color:var(--text-secondary); font-size:0.9rem; margin-bottom:0;">탄생일에 해당하는 별자리를 클릭하면 기본 특성을 확인할 수 있습니다</p>
+
+    <div class="zodiac-grid" id="zodiacGrid"></div>
+    <div id="zodiacInfo">
+      <div class="zodiac-info-header">
+        <span class="zodiac-info-symbol" id="ziSymbol"></span>
+        <div>
+          <div class="zodiac-info-title" id="ziTitle"></div>
+          <div class="zodiac-info-date" id="ziDate"></div>
+        </div>
+      </div>
+      <p class="zodiac-info-desc" id="ziDesc"></p>
+      <div class="zodiac-tags" id="ziTags"></div>
+      <p style="font-size:0.82rem; color:var(--text-muted); margin-top:20px;">✨ 태양궁 외에도 달궁, 상승궁까지 분석하는 심층 차트는 함쌤 상담으로 받아보세요</p>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-card-num">☉</div>
+        <h3>태양 차트</h3>
+        <p>탄생 시 태양의 위치로 읽는 본질적 자아. 삶의 목적과 의식적 정체성을 보여줍니다.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-num">☽</div>
+        <h3>달 차트</h3>
+        <p>감정과 무의식의 영역. 내면의 욕구와 본능적 반응 패턴, 어머니와의 관계를 담습니다.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-num">↑</div>
+        <h3>상승궁 분석</h3>
+        <p>타인에게 보이는 첫인상과 외적 페르소나. 세상과 상호작용하는 방식을 보여줍니다.</p>
+      </div>
+    </div>
+
+    <div class="consult-box">
+      <div class="price-tag">KAKAO CONSULTATION</div>
+      <h2>별자리차트 상담 신청</h2>
+      <p>태양궁부터 달궁, 상승궁, 행성 배치까지<br/>당신만의 완전한 별자리 지도를 함쌤과 함께 읽어보세요.</p>
+      <a href="https://open.kakao.com/o/gbdfKQai" target="_blank" class="btn-kakao">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2C5.58 2 2 4.91 2 8.5c0 2.26 1.33 4.25 3.36 5.45L4.5 17.5l3.79-2.53c.55.08 1.13.12 1.71.12 4.42 0 8-2.91 8-6.5S14.42 2 10 2z"/></svg>
+        카카오로 상담 신청하기
+      </a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">HAM SSAM<br/><small>함쌤의 우주상담소</small></div>
+      <div class="footer-links">
+        <a href="../index.html">홈</a>
+        <a href="shape.html">도형심리분석</a>
+        <a href="star.html">별자리차트</a>
+        <a href="saju.html">운명비밀사주</a>
+        <a href="https://open.kakao.com/o/gbdfKQai" target="_blank">카카오 상담</a>
+      </div>
+      <p class="footer-copy">© 2025 HAM SSAM. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="../js/cosmos.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    const zodiacs = [
+      { symbol:'♈', name:'양자리', en:'Aries', date:'3.21–4.19', desc:'불의 기운을 품은 첫 번째 별자리. 개척 정신과 용기, 열정이 넘칩니다. 새로운 시작을 두려워하지 않는 본능적 리더입니다.', tags:['개척자','열정','용기','독립심'] },
+      { symbol:'♉', name:'황소자리', en:'Taurus', date:'4.20–5.20', desc:'대지의 기운을 가진 별자리. 안정, 인내, 감각적 아름다움을 추구합니다. 한 번 마음을 정하면 끝까지 가는 흔들림 없는 존재입니다.', tags:['안정','인내','감각','신뢰'] },
+      { symbol:'♊', name:'쌍둥이자리', en:'Gemini', date:'5.21–6.21', desc:'바람의 별자리. 지적 호기심과 소통 능력이 탁월합니다. 다양한 관점을 동시에 이해하는 유연한 사고의 소유자입니다.', tags:['지성','소통','유연성','호기심'] },
+      { symbol:'♋', name:'게자리', en:'Cancer', date:'6.22–7.22', desc:'달의 지배를 받는 물의 별자리. 깊은 감수성과 강한 직관력을 가집니다. 가족과 안전한 공간을 소중히 여기는 따뜻한 존재입니다.', tags:['감수성','직관','보호','공감'] },
+      { symbol:'♌', name:'사자자리', en:'Leo', date:'7.23–8.22', desc:'태양의 기운을 받은 불의 별자리. 카리스마와 창의성이 넘칩니다. 무대 위에서 빛나는 당당함과 관대한 마음을 가집니다.', tags:['카리스마','창의성','관대함','자신감'] },
+      { symbol:'♍', name:'처녀자리', en:'Virgo', date:'8.23–9.22', desc:'섬세함과 분석력의 별자리. 완벽을 추구하는 지성적인 존재입니다. 세상의 질서를 정리하고 실용적인 해결책을 찾아냅니다.', tags:['분석','섬세함','실용','완벽'] },
+      { symbol:'♎', name:'천칭자리', en:'Libra', date:'9.23–10.23', desc:'균형과 조화의 별자리. 아름다움에 대한 심미안과 공정한 시각을 가집니다. 관계에서 평화와 균형을 만들어가는 외교관입니다.', tags:['균형','조화','심미안','외교'] },
+      { symbol:'♏', name:'전갈자리', en:'Scorpio', date:'10.24–11.22', desc:'심층의 물처럼 깊은 별자리. 강렬한 직관과 변환의 힘을 가집니다. 표면 너머 진실을 꿰뚫는 통찰력의 소유자입니다.', tags:['강렬함','직관','통찰','변환'] },
+      { symbol:'♐', name:'사수자리', en:'Sagittarius', date:'11.23–12.21', desc:'자유와 탐험의 불 별자리. 철학적 사고와 모험 정신이 넘칩니다. 진리와 의미를 찾아 끝없이 확장하는 여행자입니다.', tags:['자유','모험','철학','낙관'] },
+      { symbol:'♑', name:'염소자리', en:'Capricorn', date:'12.22–1.19', desc:'산처럼 묵직한 땅의 별자리. 인내와 야망으로 정상을 향해 나아갑니다. 책임감과 현실적인 지혜로 꿈을 현실로 만듭니다.', tags:['야망','인내','책임','지혜'] },
+      { symbol:'♒', name:'물병자리', en:'Aquarius', date:'1.20–2.18', desc:'혁신과 인류애의 공기 별자리. 미래를 내다보는 선구자적 시각을 가집니다. 자유로운 사고로 세상을 바꾸는 혁명가입니다.', tags:['혁신','독창성','인류애','자유'] },
+      { symbol:'♓', name:'물고기자리', en:'Pisces', date:'2.19–3.20', desc:'신비의 물 별자리. 깊은 공감 능력과 영적 감수성을 가집니다. 현실과 꿈의 경계를 자유롭게 유영하는 예술적 존재입니다.', tags:['공감','영성','예술','직관'] },
+    ];
+
+    const grid = document.getElementById('zodiacGrid');
+    zodiacs.forEach((z, i) => {
+      const el = document.createElement('div');
+      el.className = 'zodiac-item';
+      el.innerHTML = `<span class="zodiac-symbol">${z.symbol}</span><span class="zodiac-name">${z.name}</span><span class="zodiac-date">${z.date}</span>`;
+      el.addEventListener('click', () => {
+        document.querySelectorAll('.zodiac-item').forEach(x => x.classList.remove('active'));
+        el.classList.add('active');
+        document.getElementById('ziSymbol').textContent = z.symbol;
+        document.getElementById('ziTitle').textContent = z.name + ' (' + z.en + ')';
+        document.getElementById('ziDate').textContent = z.date;
+        document.getElementById('ziDesc').textContent = z.desc;
+        document.getElementById('ziTags').innerHTML = z.tags.map(t => `<span class="zodiac-tag">${t}</span>`).join('');
+        const info = document.getElementById('zodiacInfo');
+        info.style.display = 'block';
+        info.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      });
+      grid.appendChild(el);
+    });
+  </script>
+</body>
+</html>

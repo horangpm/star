@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>도형심리분석 — HAM SSAM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <style>
+    .shape-accent { color: var(--purple-light); }
+    .hero-shape { background: linear-gradient(135deg, var(--purple-light), var(--blue)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .info-card:nth-child(1) .info-card-num { color: rgba(192,132,252,0.4); }
+    .info-card:nth-child(2) .info-card-num { color: rgba(96,165,250,0.4); }
+    .info-card:nth-child(3) .info-card-num { color: rgba(244,114,182,0.4); }
+    .shapes-demo { display: flex; justify-content: center; gap: 32px; flex-wrap: wrap; margin: 60px 0; }
+    .shape-item { display: flex; flex-direction: column; align-items: center; gap: 14px; cursor: pointer; transition: transform 0.3s ease; }
+    .shape-item:hover { transform: translateY(-6px) scale(1.05); }
+    .shape-item svg { width: 80px; height: 80px; filter: drop-shadow(0 0 12px rgba(192,132,252,0.4)); transition: filter 0.3s ease; }
+    .shape-item:hover svg { filter: drop-shadow(0 0 24px rgba(192,132,252,0.7)); }
+    .shape-item span { font-size: 0.8rem; color: var(--text-muted); letter-spacing: 0.1em; font-family: var(--font-display); }
+    .process-list { display: flex; flex-direction: column; gap: 0; }
+    .process-item { display: flex; gap: 24px; align-items: flex-start; padding: 28px 0; border-bottom: 1px solid var(--border); }
+    .process-item:last-child { border-bottom: none; }
+    .process-num { font-family: var(--font-display); font-size: 1.6rem; color: rgba(192,132,252,0.3); min-width: 40px; line-height: 1; }
+    .process-item h4 { font-family: var(--font-serif); font-size: 1.05rem; font-weight: 600; margin-bottom: 6px; color: var(--text-primary); }
+    .process-item p { font-size: 0.88rem; color: var(--text-secondary); line-height: 1.8; }
+  </style>
+</head>
+<body>
+  <canvas id="cosmos"></canvas>
+  <div class="particles" id="particles"></div>
+
+  <header class="site-header">
+    <div class="logo">
+      <a href="../index.html" style="display:flex;flex-direction:column;gap:2px;">
+        <span class="logo-en">HAM SSAM</span>
+        <span class="logo-ko">함쌤</span>
+      </a>
+    </div>
+    <nav class="gnav">
+      <a href="shape.html" style="color:var(--purple-light)">도형심리</a>
+      <a href="star.html">별자리</a>
+      <a href="saju.html">사주</a>
+      <a href="https://open.kakao.com/o/gbdfKQai" target="_blank" class="nav-cta">상담 신청</a>
+    </nav>
+    <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="../index.html">← 홈으로</a>
+    <a href="shape.html">도형심리분석</a>
+    <a href="star.html">별자리차트</a>
+    <a href="saju.html">운명비밀사주</a>
+    <a href="https://open.kakao.com/o/gbdfKQai" target="_blank" class="mobile-cta">💬 카카오 상담 신청</a>
+  </div>
+
+  <section class="page-hero">
+    <p class="page-hero-label">SHAPE PSYCHOLOGY</p>
+    <h1><span class="hero-shape">도형심리분석</span></h1>
+    <p>당신이 무의식적으로 선택하는 도형 속에는<br/>숨겨진 심리와 진짜 자아의 언어가 담겨 있습니다.</p>
+  </section>
+
+  <!-- 도형 인터랙티브 데모 -->
+  <div class="content-section">
+    <div style="text-align:center; margin-bottom:16px;">
+      <div class="section-label" style="display:inline-block;">SHAPES</div>
+    </div>
+    <h2 style="text-align:center; font-family:var(--font-serif); font-size:1.5rem; font-weight:600; margin-bottom:8px;">어떤 도형이 끌리시나요?</h2>
+    <p style="text-align:center; color:var(--text-secondary); font-size:0.9rem; margin-bottom:0;">직관적으로 가장 먼저 눈에 들어오는 도형을 선택해보세요</p>
+
+    <div class="shapes-demo">
+      <div class="shape-item" onclick="showShapeMeaning('circle')">
+        <svg viewBox="0 0 80 80" fill="none">
+          <circle cx="40" cy="40" r="30" stroke="url(#sc1)" stroke-width="2"/>
+          <circle cx="40" cy="40" r="15" stroke="url(#sc1)" stroke-width="1" opacity="0.5"/>
+          <defs><linearGradient id="sc1" x1="0" y1="0" x2="80" y2="80"><stop offset="0%" stop-color="#c084fc"/><stop offset="100%" stop-color="#60a5fa"/></linearGradient></defs>
+        </svg>
+        <span>원</span>
+      </div>
+      <div class="shape-item" onclick="showShapeMeaning('triangle')">
+        <svg viewBox="0 0 80 80" fill="none">
+          <polygon points="40,8 72,68 8,68" stroke="url(#sc2)" stroke-width="2"/>
+          <defs><linearGradient id="sc2" x1="0" y1="0" x2="80" y2="80"><stop offset="0%" stop-color="#f472b6"/><stop offset="100%" stop-color="#c084fc"/></linearGradient></defs>
+        </svg>
+        <span>삼각형</span>
+      </div>
+      <div class="shape-item" onclick="showShapeMeaning('square')">
+        <svg viewBox="0 0 80 80" fill="none">
+          <rect x="12" y="12" width="56" height="56" rx="4" stroke="url(#sc3)" stroke-width="2"/>
+          <defs><linearGradient id="sc3" x1="0" y1="0" x2="80" y2="80"><stop offset="0%" stop-color="#60a5fa"/><stop offset="100%" stop-color="#34d399"/></linearGradient></defs>
+        </svg>
+        <span>사각형</span>
+      </div>
+      <div class="shape-item" onclick="showShapeMeaning('spiral')">
+        <svg viewBox="0 0 80 80" fill="none">
+          <path d="M40,40 Q48,32 48,40 Q48,52 36,52 Q20,52 20,36 Q20,18 40,18 Q62,18 62,40 Q62,64 38,64" stroke="url(#sc4)" stroke-width="2" fill="none"/>
+          <defs><linearGradient id="sc4" x1="0" y1="0" x2="80" y2="80"><stop offset="0%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#f472b6"/></linearGradient></defs>
+        </svg>
+        <span>나선형</span>
+      </div>
+      <div class="shape-item" onclick="showShapeMeaning('star')">
+        <svg viewBox="0 0 80 80" fill="none">
+          <polygon points="40,8 46,28 68,28 51,42 57,62 40,50 23,62 29,42 12,28 34,28" stroke="url(#sc5)" stroke-width="2"/>
+          <defs><linearGradient id="sc5" x1="0" y1="0" x2="80" y2="80"><stop offset="0%" stop-color="#fbbf24"/><stop offset="100%" stop-color="#fb923c"/></linearGradient></defs>
+        </svg>
+        <span>별</span>
+      </div>
+    </div>
+
+    <!-- 결과 표시 영역 -->
+    <div id="shapeResult" style="display:none; background:rgba(192,132,252,0.07); border:1px solid rgba(192,132,252,0.25); border-radius:16px; padding:32px; margin-bottom:48px; text-align:center;">
+      <div id="shapeResultTitle" style="font-family:var(--font-serif); font-size:1.3rem; font-weight:600; margin-bottom:12px; color:var(--purple-light);"></div>
+      <div id="shapeResultDesc" style="font-size:0.92rem; color:var(--text-secondary); line-height:1.9; margin-bottom:20px;"></div>
+      <p style="font-size:0.82rem; color:var(--text-muted);">✨ 더 깊은 분석은 함쌤과의 1:1 상담으로 받아보세요</p>
+    </div>
+
+    <!-- 서비스 설명 카드 -->
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-card-num">01</div>
+        <h3>무의식의 언어</h3>
+        <p>도형 선택은 의식적 판단 이전의 무의식이 반응합니다. 가장 솔직한 자아의 목소리를 도형이 전해줍니다.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-num">02</div>
+        <h3>심층 심리 분석</h3>
+        <p>융 심리학과 형태 심리학을 기반으로 도형의 상징성과 개인 무의식을 연결하여 분석합니다.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-num">03</div>
+        <h3>맞춤형 해석</h3>
+        <p>단순한 유형 분류가 아닌, 현재 당신의 상황과 연결된 맥락 있는 심리 해석을 제공합니다.</p>
+      </div>
+    </div>
+
+    <!-- 상담 프로세스 -->
+    <h3 style="font-family:var(--font-serif); font-size:1.3rem; font-weight:600; margin-bottom:8px; color:var(--text-primary);">상담 진행 방식</h3>
+    <div class="process-list">
+      <div class="process-item">
+        <div class="process-num">01</div>
+        <div>
+          <h4>카카오 오픈채팅 문의</h4>
+          <p>원하시는 상담 종류와 간단한 현재 상황을 알려주세요. 편하게 말씀해 주셔도 됩니다.</p>
+        </div>
+      </div>
+      <div class="process-item">
+        <div class="process-num">02</div>
+        <div>
+          <h4>사전 도형 선택 진행</h4>
+          <p>함쌤이 보내드리는 도형 카드를 직관적으로 선택합니다. 생각하지 말고 느낌대로.</p>
+        </div>
+      </div>
+      <div class="process-item">
+        <div class="process-num">03</div>
+        <div>
+          <h4>심층 분석 & 해석 전달</h4>
+          <p>선택 패턴을 분석하여 무의식의 심리 구조와 현재 당신에게 필요한 메시지를 전달합니다.</p>
+        </div>
+      </div>
+      <div class="process-item">
+        <div class="process-num">04</div>
+        <div>
+          <h4>질의응답 & 마무리</h4>
+          <p>분석 결과에 대한 질문과 일상에서의 적용 방법까지 함께 이야기 나눕니다.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="consult-box">
+      <div class="price-tag">KAKAO CONSULTATION</div>
+      <h2>도형심리분석 상담 신청</h2>
+      <p>당신의 무의식이 보내는 신호를 함쌤과 함께 해석해보세요.<br/>카카오 오픈채팅으로 편하게 문의하실 수 있습니다.</p>
+      <a href="https://open.kakao.com/o/gbdfKQai" target="_blank" class="btn-kakao">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2C5.58 2 2 4.91 2 8.5c0 2.26 1.33 4.25 3.36 5.45L4.5 17.5l3.79-2.53c.55.08 1.13.12 1.71.12 4.42 0 8-2.91 8-6.5S14.42 2 10 2z"/></svg>
+        카카오로 상담 신청하기
+      </a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">HAM SSAM<br/><small>함쌤의 우주상담소</small></div>
+      <div class="footer-links">
+        <a href="../index.html">홈</a>
+        <a href="shape.html">도형심리분석</a>
+        <a href="star.html">별자리차트</a>
+        <a href="saju.html">운명비밀사주</a>
+        <a href="https://open.kakao.com/o/gbdfKQai" target="_blank">카카오 상담</a>
+      </div>
+      <p class="footer-copy">© 2025 HAM SSAM. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="../js/cosmos.js"></script>
+  <script src="../js/main.js"></script>
+  <script>
+    const meanings = {
+      circle: { title: '✦ 원을 선택하신 당신', desc: '조화와 완전함을 추구하는 성향이 강합니다. 관계를 소중히 여기며 직관이 뛰어나고, 감정 공감 능력이 높습니다. 지금 이 순간 연결과 유대감에 대한 깊은 욕구가 있을 수 있습니다.' },
+      triangle: { title: '✦ 삼각형을 선택하신 당신', desc: '목표 지향적이고 리더십이 강한 성향입니다. 도전과 성취에서 에너지를 얻으며, 명확한 방향성을 추구합니다. 지금 중요한 결정을 앞두고 있거나, 새로운 방향을 모색 중일 수 있습니다.' },
+      square: { title: '✦ 사각형을 선택하신 당신', desc: '안정성과 신뢰를 중시하는 성향입니다. 체계적이고 실용적이며, 책임감이 강합니다. 지금 안정된 기반을 다지고 싶은 욕구나, 혼돈 속에서 질서를 찾고 싶은 마음이 있을 수 있습니다.' },
+      spiral: { title: '✦ 나선형을 선택하신 당신', desc: '창의성과 변화를 즐기는 성향입니다. 깊은 내면 탐구에 대한 욕구가 있으며, 영적 성장에 관심이 많습니다. 지금 삶의 전환점에 서 있거나, 내면의 변화를 감지하고 있을 수 있습니다.' },
+      star: { title: '✦ 별을 선택하신 당신', desc: '이상과 꿈을 향해 나아가는 성향입니다. 빛나고 싶은 욕구와 타인에게 영감을 주고 싶은 마음이 강합니다. 지금 자신만의 특별한 가치와 재능을 발견하거나 표현하고 싶은 시기일 수 있습니다.' }
+    };
+    function showShapeMeaning(type) {
+      const m = meanings[type];
+      const r = document.getElementById('shapeResult');
+      document.getElementById('shapeResultTitle').textContent = m.title;
+      document.getElementById('shapeResultDesc').textContent = m.desc;
+      r.style.display = 'block';
+      r.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  </script>
+</body>
+</html>

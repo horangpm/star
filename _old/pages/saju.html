@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>운명비밀사주 — HAM SSAM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="../css/style.css"/>
+  <style>
+    .hero-saju { background: linear-gradient(135deg, #6ee7b7, #818cf8); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .saju-board { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 500px; margin: 48px auto; }
+    .saju-pillar { display: flex; flex-direction: column; gap: 8px; }
+    .saju-cell { background: rgba(52,211,153,0.06); border: 1px solid rgba(52,211,153,0.2); border-radius: 10px; padding: 16px 8px; text-align: center; transition: all 0.3s ease; }
+    .saju-cell:hover { background: rgba(52,211,153,0.12); border-color: rgba(52,211,153,0.4); }
+    .saju-cell .han { font-family: var(--font-serif); font-size: 1.8rem; font-weight: 600; display: block; line-height: 1; margin-bottom: 6px; }
+    .saju-cell .label { font-size: 0.65rem; color: var(--text-muted); letter-spacing: 0.15em; }
+    .pillar-name { text-align: center; font-size: 0.7rem; color: var(--text-muted); letter-spacing: 0.15em; margin-top: 4px; font-family: var(--font-display); }
+    .sky { color: #6ee7b7; }
+    .earth { color: #818cf8; }
+    .element-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin: 48px 0; }
+    .element-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; padding: 20px 16px; text-align: center; cursor: pointer; transition: all 0.3s ease; }
+    .element-card:hover { transform: translateY(-4px); border-color: var(--border-hover); }
+    .element-symbol { font-size: 1.6rem; display: block; margin-bottom: 8px; }
+    .element-name { font-family: var(--font-serif); font-size: 1rem; font-weight: 600; display: block; margin-bottom: 4px; }
+    .element-attr { font-size: 0.72rem; color: var(--text-muted); }
+    .e-wood .element-name { color: #86efac; }
+    .e-fire .element-name { color: #fca5a5; }
+    .e-earth .element-name { color: #fde68a; }
+    .e-metal .element-name { color: #e5e7eb; }
+    .e-water .element-name { color: #93c5fd; }
+    .info-card:nth-child(1) .info-card-num { color: rgba(52,211,153,0.4); }
+    .info-card:nth-child(2) .info-card-num { color: rgba(129,140,248,0.4); }
+    .info-card:nth-child(3) .info-card-num { color: rgba(251,191,36,0.4); }
+    .saju-intro { background: rgba(52,211,153,0.05); border: 1px solid rgba(52,211,153,0.15); border-radius: 16px; padding: 28px 32px; margin-bottom: 48px; }
+    .saju-intro p { font-size: 0.92rem; color: var(--text-secondary); line-height: 1.9; }
+  </style>
+</head>
+<body>
+  <canvas id="cosmos"></canvas>
+  <div class="particles" id="particles"></div>
+
+  <header class="site-header">
+    <div class="logo">
+      <a href="../index.html" style="display:flex;flex-direction:column;gap:2px;">
+        <span class="logo-en">HAM SSAM</span>
+        <span class="logo-ko">함쌤</span>
+      </a>
+    </div>
+    <nav class="gnav">
+      <a href="shape.html">도형심리</a>
+      <a href="star.html">별자리</a>
+      <a href="saju.html" style="color:#6ee7b7">사주</a>
+      <a href="https://open.kakao.com/o/gbdfKQai" target="_blank" class="nav-cta">상담 신청</a>
+    </nav>
+    <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
+      <span></span><span></span><span></span>
+    </button>
+  </header>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="../index.html">← 홈으로</a>
+    <a href="shape.html">도형심리분석</a>
+    <a href="star.html">별자리차트</a>
+    <a href="saju.html">운명비밀사주</a>
+    <a href="https://open.kakao.com/o/gbdfKQai" target="_blank" class="mobile-cta">💬 카카오 상담 신청</a>
+  </div>
+
+  <section class="page-hero">
+    <p class="page-hero-label">SECRET DESTINY SAJU</p>
+    <h1><span class="hero-saju">운명비밀사주</span></h1>
+    <p>사주팔자 속에 새겨진 당신만의 운명 코드.<br/>천간지지가 펼치는 삶의 이야기를 함께 읽어드립니다.</p>
+  </section>
+
+  <div class="content-section">
+
+    <!-- 사주 팔자 시각화 -->
+    <div style="text-align:center; margin-bottom:16px;">
+      <div class="section-label" style="display:inline-block;">FOUR PILLARS</div>
+    </div>
+    <h2 style="text-align:center; font-family:var(--font-serif); font-size:1.5rem; font-weight:600; margin-bottom:8px;">사주팔자란?</h2>
+    <p style="text-align:center; color:var(--text-secondary); font-size:0.9rem;">태어난 연·월·일·시의 네 기둥(四柱)과 여덟 글자(八字)</p>
+
+    <div class="saju-board">
+      <div class="saju-pillar">
+        <div class="saju-cell"><span class="han sky">甲</span><span class="label">천간</span></div>
+        <div class="saju-cell"><span class="han earth">子</span><span class="label">지지</span></div>
+        <div class="pillar-name">시주</div>
+      </div>
+      <div class="saju-pillar">
+        <div class="saju-cell"><span class="han sky">丙</span><span class="label">천간</span></div>
+        <div class="saju-cell"><span class="han earth">午</span><span class="label">지지</span></div>
+        <div class="pillar-name">일주</div>
+      </div>
+      <div class="saju-pillar">
+        <div class="saju-cell"><span class="han sky">戊</span><span class="label">천간</span></div>
+        <div class="saju-cell"><span class="han earth">辰</span><span class="label">지지</span></div>
+        <div class="pillar-name">월주</div>
+      </div>
+      <div class="saju-pillar">
+        <div class="saju-cell"><span class="han sky">庚</span><span class="label">천간</span></div>
+        <div class="saju-cell"><span class="han earth">寅</span><span class="label">지지</span></div>
+        <div class="pillar-name">연주</div>
+      </div>
+    </div>
+
+    <div class="saju-intro">
+      <p>사주(四柱)는 태어난 연·월·일·시를 기준으로 네 개의 기둥을 세우고, 각 기둥에 천간(天干)과 지지(地支) 두 글자씩 배열하여 총 여덟 글자(八字)로 개인의 운명을 읽는 동양의 지혜입니다. 단순한 점술이 아닌, 음양오행의 이치로 당신의 기질·재능·관계·시운을 분석하는 깊이 있는 학문입니다.</p>
+    </div>
+
+    <!-- 오행 -->
+    <div style="text-align:center; margin-bottom:16px;">
+      <div class="section-label" style="display:inline-block;">FIVE ELEMENTS</div>
+    </div>
+    <h2 style="text-align:center; font-family:var(--font-serif); font-size:1.4rem; font-weight:600; margin-bottom:8px;">오행(五行)의 기운</h2>
+    <p style="text-align:center; color:var(--text-secondary); font-size:0.88rem; margin-bottom:0;">당신의 사주 속 오행 배합이 인생의 방향을 결정합니다</p>
+
+    <div class="element-grid">
+      <div class="element-card e-wood">
+        <span class="element-symbol">🌿</span>
+        <span class="element-name">목(木)</span>
+        <span class="element-attr">성장·창조·인자함</span>
+      </div>
+      <div class="element-card e-fire">
+        <span class="element-symbol">🔥</span>
+        <span class="element-name">화(火)</span>
+        <span class="element-attr">열정·표현·예의</span>
+      </div>
+      <div class="element-card e-earth">
+        <span class="element-symbol">🌍</span>
+        <span class="element-name">토(土)</span>
+        <span class="element-attr">안정·신뢰·중재</span>
+      </div>
+      <div class="element-card e-metal">
+        <span class="element-symbol">⚔️</span>
+        <span class="element-name">금(金)</span>
+        <span class="element-attr">결단·의리·완벽</span>
+      </div>
+      <div class="element-card e-water">
+        <span class="element-symbol">💧</span>
+        <span class="element-name">수(水)</span>
+        <span class="element-attr">지혜·유연·적응</span>
+      </div>
+    </div>
+
+    <div class="info-grid">
+      <div class="info-card">
+        <div class="info-card-num">命</div>
+        <h3>타고난 기질 분석</h3>
+        <p>사주원국에 담긴 타고난 성격, 재능, 관계 패턴을 오행의 배합으로 분석합니다.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-num">運</div>
+        <h3>대운·세운 흐름</h3>
+        <p>10년 단위 대운과 연간 세운의 흐름을 파악하여 현재 시운을 정확히 진단합니다.</p>
+      </div>
+      <div class="info-card">
+        <div class="info-card-num">福</div>
+        <h3>인연·재물·직업</h3>
+        <p>사주에서 보이는 인연의 시기, 재물운, 가장 적합한 직업과 역할을 함께 살펴봅니다.</p>
+      </div>
+    </div>
+
+    <div class="consult-box">
+      <div class="price-tag">KAKAO CONSULTATION</div>
+      <h2>운명비밀사주 상담 신청</h2>
+      <p>생년월일시를 알려주시면 함쌤이 당신만의<br/>사주팔자를 풀어드립니다.</p>
+      <a href="https://open.kakao.com/o/gbdfKQai" target="_blank" class="btn-kakao">
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2C5.58 2 2 4.91 2 8.5c0 2.26 1.33 4.25 3.36 5.45L4.5 17.5l3.79-2.53c.55.08 1.13.12 1.71.12 4.42 0 8-2.91 8-6.5S14.42 2 10 2z"/></svg>
+        카카오로 상담 신청하기
+      </a>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+    <div class="footer-inner">
+      <div class="footer-logo">HAM SSAM<br/><small>함쌤의 우주상담소</small></div>
+      <div class="footer-links">
+        <a href="../index.html">홈</a>
+        <a href="shape.html">도형심리분석</a>
+        <a href="star.html">별자리차트</a>
+        <a href="saju.html">운명비밀사주</a>
+        <a href="https://open.kakao.com/o/gbdfKQai" target="_blank">카카오 상담</a>
+      </div>
+      <p class="footer-copy">© 2025 HAM SSAM. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <script src="../js/cosmos.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>
