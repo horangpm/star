@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="글라스미 안경 배곧점 - 대할인 행사! 안경테 최대 80% 할인, 안경렌즈 50%~70% 할인. 배곧 최고의 안경전문점" />
+  <meta name="keywords" content="글라스미안경, 배곧안경, 안경테할인, 안경렌즈할인, 선글라스, 누진다초점, 배곧점" />
+  <title>글라스미 안경 배곧점 | GLASSME EYEWEAR</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@300;400;500;700;900&family=Montserrat:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="header" id="header">
+    <nav class="nav container">
+      <div class="nav__logo">
+        <span class="logo-icon">&#128083;</span>
+        <div class="logo-text">
+          <span class="logo-main">글라스미 안경</span>
+          <span class="logo-sub">GLASSME EYEWEAR &middot; 배곧점</span>
+        </div>
+      </div>
+      <ul class="nav__menu" id="navMenu">
+        <li><a href="#hero" class="nav__link" onclick="closeMenu()">홈</a></li>
+        <li><a href="#sale" class="nav__link" onclick="closeMenu()">행사 안내</a></li>
+        <li><a href="#frames" class="nav__link" onclick="closeMenu()">안경테</a></li>
+        <li><a href="#lens" class="nav__link" onclick="closeMenu()">안경렌즈</a></li>
+        <li><a href="#sunglass" class="nav__link" onclick="closeMenu()">선글라스</a></li>
+        <li><a href="#gallery" class="nav__link" onclick="closeMenu()">매장 전경</a></li>
+        <li><a href="#contact" class="nav__link nav__link--cta" onclick="closeMenu()">오시는 길</a></li>
+      </ul>
+      <button class="nav__hamburger" id="hamburger" onclick="toggleMenu()" aria-label="메뉴 열기">
+        <span></span><span></span><span></span>
+      </button>
+    </nav>
+  </header>
+
+  <section class="hero" id="hero">
+    <div class="hero__bg-overlay"></div>
+    <div class="hero__content container">
+      <div class="hero__badge">&#127800; 2026 특별 할인</div>
+      <h1 class="hero__title">
+        <span class="hero__title--sub">배곧의 프리미엄 안경전문점</span>
+        <span class="hero__title--main">글라스미 안경</span>
+        <span class="hero__title--accent">배곧점</span>
+      </h1>
+      <p class="hero__desc">
+        고유가 시대, 가정에 보탬이 되고자 특별한  할인행사를 준비했습니다.<br/>
+        안경테 최대 <strong>80% 할인</strong>으로 아름다운 눈빛을 만나보세요!
+      </p>
+      <div class="hero__cta-group">
+        <a href="#sale" class="btn btn--primary" id="hero-sale-btn">행사 상품 보기</a>
+        <a href="#contact" class="btn btn--outline" id="hero-map-btn">매장 위치 확인</a>
+      </div>
+      <div class="hero__stats">
+        <div class="stat-item">
+          <span class="stat-num">최대 80%</span>
+          <span class="stat-label">안경테 할인</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">최대 70%</span>
+          <span class="stat-label">렌즈 할인</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat-item">
+          <span class="stat-num">누진다초점</span>
+          <span class="stat-label">최대 50% 할인</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero__scroll-hint">
+      <span>스크롤</span>
+      <div class="scroll-arrow"></div>
+    </div>
+  </section>
+
+  <section class="announce">
+    <div class="announce__track">
+      <div class="announce__inner" id="announceTicker">
+        <span>&#127800; 대할인 행사 진행중!</span>
+        <span>&hearts; 안경테 최대 80% 할인 &middot; 10,000원부터!</span>
+        <span>&hearts; 안경렌즈 블루라이트 청광 최대 70% 할인!</span>
+        <span>&hearts; 누진다초점 최대 50% 할인!</span>
+        <span>&hearts; 선글라스 최대 70% 할인!</span>
+        <span>&hearts; 소아 선글라스 단돈 20,000원!</span>
+        <span>&#128222; 031-433-0880 &middot; 배곧신도시 위치</span>
+        <span>&#127800; 대할인 행사 진행중!</span>
+        <span>&hearts; 안경테 최대 80% 할인 &middot; 10,000원부터!</span>
+        <span>&hearts; 안경렌즈 블루라이트 청광 최대 70% 할인!</span>
+        <span>&hearts; 누진다초점 최대 50% 할인!</span>
+        <span>&hearts; 선글라스 최대 70% 할인!</span>
+        <span>&hearts; 소아 선글라스 단돈 20,000원!</span>
+        <span>&#128222; 031-433-0880 &middot; 배곧신도시 위치</span>
+      </div>
+    </div>
+  </section>
+
+<section class="why-us section">
+    <div class="container">
+      <div class="section__header">
+        <span class="section__tag">WHY GLASSME</span>
+        <h2 class="section__title">글라스미를 선택하는 이유</h2>
+      </div>
+      <div class="why-grid">
+        <div class="why-item">
+          <div class="why-item__icon">&#127942;</div>
+          <h3 class="why-item__title">전문 안경사</h3>
+          <p class="why-item__desc">숙련된 전문 안경사가 눈에 맞는 최적의 안경을 처방해 드립니다.</p>
+        </div>
+        <div class="why-item">
+          <div class="why-item__icon">&#128142;</div>
+          <h3 class="why-item__title">누진다초점 전문</h3>
+          <p class="why-item__desc">수입 고급 브랜드 누진다초점 렌즈 전문 매장. 1층에서 바로 처방 가능!</p>
+        </div>
+        <div class="why-item">
+          <div class="why-item__icon">&#128176;</div>
+          <h3 class="why-item__title">파격적인 가격</h3>
+          <p class="why-item__desc">중간 유통 마진을 없애 고품질 안경을 믿을 수 없는 가격으로 제공합니다.</p>
+        </div>
+        <div class="why-item">
+          <div class="why-item__icon">&#127752;</div>
+          <h3 class="why-item__title">다양한 선택</h3>
+          <p class="why-item__desc">안경테, 렌즈, 선글라스, 콘택트렌즈까지 원스톱으로 해결하세요.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+<section class="gallery-section section" id="gallery">
+    <div class="container">
+      <div class="section__header">
+        <span class="section__tag">STORE GALLERY</span>
+        <h2 class="section__title">배곧점 매장 전경</h2>
+        <p class="section__desc">1층에 위치한 넓고 쾌적한 매장에서 프리미엄 안경과 렌즈를 만나보세요</p>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item">
+          <div class="gallery-img-wrapper">
+            <img src="images/glassme_store_1.jpg" alt="글라스미 안경 배곧점 매장 전경 1" class="gallery-img" loading="lazy" />
+          </div>
+          <div class="gallery-info">
+            <h4>트렌디한 프리미엄 안경테</h4>
+            <p>다양한 스타일의 브랜드 안경테를 한눈에</p>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-img-wrapper">
+            <img src="images/glassme_store_2.jpg" alt="글라스미 안경 배곧점 매장 전경 2" class="gallery-img" loading="lazy" />
+          </div>
+          <div class="gallery-info">
+            <h4>정밀 검안 및 조립 공간</h4>
+            <p>전문 안경사의 신뢰할 수 있는 1:1 맞춤 검안</p>
+          </div>
+        </div>
+        <div class="gallery-item">
+          <div class="gallery-img-wrapper">
+            <img src="images/glassme_store_3.jpg" alt="글라스미 안경 배곧점 매장 전경 3" class="gallery-img" loading="lazy" />
+          </div>
+          <div class="gallery-info">
+            <h4>수입 누진다초점 전문 매장</h4>
+            <p>최신 기술의 블루라이트 청광 & 누진 렌즈 처방</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="reviews-section section" id="reviews">
+    <div class="container">
+      <div class="section__header">
+        <span class="section__tag">CUSTOMER REVIEWS</span>
+        <h2 class="section__title">고객 생생 후기</h2>
+        <p class="section__desc">글라스미 안경 배곧점을 방문해주신 고객님들의 솔직한 후기입니다</p>
+      </div>
+      <div class="reviews-container">
+        <div class="reviews-img-wrapper">
+          <img src="images/review_img.jpg" alt="고객 리뷰 키워드" class="reviews-img" loading="lazy" />
+        </div>
+        <div class="reviews-list">
+          <div class="review-item">
+            <div class="review-quote-icon">&#10077;</div>
+            <p class="review-text">안경 테 종류가 가격별로 다양해서 합리적으로 잘 고를 수 있었고 사장님이 너무너무 친절하셨어요!! 다음에 안경 바꿀 때 또 오려구요👍</p>
+            <div class="review-author">방문자 리뷰</div>
+          </div>
+          <div class="review-item">
+            <div class="review-quote-icon">&#10077;</div>
+            <p class="review-text">배곧 이사왔을 때부터 쭉 여기만 다녔는데 항상 친절하시고 꼼꼼하게 신경써 주셔요!! 설명도 잘 해주시고 전문적이십니당!</p>
+            <div class="review-author">방문자 리뷰</div>
+          </div>
+          <div class="review-item">
+            <div class="review-quote-icon">&#10077;</div>
+            <p class="review-text">안경 맞추러갔는데 가격이 저렴해서 놀랐어요~그리고 친절한 사장님 설명 덕분에 기분 좋게 안경 맞추고왔습니다!!</p>
+            <div class="review-author">방문자 리뷰</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sale-overview section" id="sale">
+    <div class="container">
+      <div class="section__header">
+        <span class="section__tag">SPRING SALE 2026</span>
+        <h2 class="section__title">신상품 할인행사</h2>
+        <p class="section__desc">고유가 시대에 가정 경제에 보탬이 되고자 특별히 준비했습니다</p>
+      </div>
+      <div class="sale-cards">
+        <div class="sale-card sale-card--frames">
+          <div class="sale-card__icon">&#128083;</div>
+          <div class="sale-card__badge">최대 80%</div>
+          <h3 class="sale-card__title">안경테</h3>
+          <p class="sale-card__range">60% ~ 80% 할인</p>
+          <p class="sale-card__price">10,000원부터</p>
+          <a href="#frames" class="sale-card__btn">자세히 보기</a>
+        </div>
+        <div class="sale-card sale-card--lens">
+          <div class="sale-card__icon">&#128300;</div>
+          <div class="sale-card__badge">최대 70%</div>
+          <h3 class="sale-card__title">안경렌즈</h3>
+          <p class="sale-card__range">50% ~ 70% 할인</p>
+          <p class="sale-card__price">10,000원부터</p>
+          <a href="#lens" class="sale-card__btn">자세히 보기</a>
+        </div>
+        <div class="sale-card sale-card--progressive">
+          <div class="sale-card__icon">&#127919;</div>
+          <div class="sale-card__badge">최대 50%</div>
+          <h3 class="sale-card__title">누진다초점</h3>
+          <p class="sale-card__range">30% ~ 50% 할인</p>
+          <p class="sale-card__price">전문 상담 후 결정</p>
+          <a href="#contact" class="sale-card__btn">상담 문의</a>
+        </div>
+        <div class="sale-card sale-card--sunglasses">
+          <div class="sale-card__icon">&#9728;&#65039;</div>
+          <div class="sale-card__badge">최대 70%</div>
+          <h3 class="sale-card__title">선글라스</h3>
+          <p class="sale-card__range">30% ~ 70% 할인</p>
+          <p class="sale-card__price">소아용 20,000원</p>
+          <a href="#sunglass" class="sale-card__btn">자세히 보기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="frames-section section" id="frames">
+    <div class="container">
+      <div class="section__header">
+        <span class="section__tag">EYEWEAR FRAMES</span>
+        <h2 class="section__title">&hearts; 안경테 할인 행사</h2>
+        <p class="section__desc">최대 80% 할인! 브랜드 안경테를 믿을 수 없는 가격으로</p>
+        <div class="discount-range-badge">할인율 60% ~ 80%</div>
+      </div>
+      <div class="price-table-wrapper">
+        <div class="price-table">
+          <div class="price-table__header">
+            <span>정상가</span>
+            <span>할인율</span>
+            <span>행사가</span>
+            <span>절약금액</span>
+          </div>
+          <div class="price-row price-row--hot">
+            <div class="price-row__original"><span class="price-label">정상가</span><span class="price-original">43,000원</span></div>
+            <div class="price-row__discount"><span class="discount-badge">80% 할인</span></div>
+            <div class="price-row__sale"><span class="price-label">행사가</span><span class="price-sale">10,000원</span></div>
+            <div class="price-row__save"><span class="price-label">절약</span><span class="price-save">33,000원 &darr;</span></div>
+          </div>
+          <div class="price-row">
+            <div class="price-row__original"><span class="price-label">정상가</span><span class="price-original">75,000원</span></div>
+            <div class="price-row__discount"><span class="discount-badge">70% 할인</span></div>
+            <div class="price-row__sale"><span class="price-label">행사가</span><span class="price-sale">19,000원</span></div>
+            <div class="price-row__save"><span class="price-label">절약</span><span class="price-save">56,000원 &darr;</span></div>
+          </div>
+          <div class="price-row">
+            <div class="price-row__original"><span class="price-label">정상가</span><span class="price-original">98,000원</span></div>
+            <div class="price-row__discount"><span class="discount-badge">60% 할인</span></div>
+            <div class="price-row__sale"><span class="price-label">행사가</span><span class="price-sale">39,000원</span></div>
+            <div class="price-row__save"><span class="price-label">절약</span><span class="price-save">59,000원 &darr;</span></div>
+          </div>
+          <div class="price-row">
+            <div class="price-row__original"><span class="price-label">정상가</span><span class="price-original">159,000원</span></div>
+            <div class="price-row__discount"><span class="discount-badge">70% 할인</span></div>
+            <div class="price-row__sale"><span class="price-label">행사가</span><span class="price-sale">49,000원</span></div>
+            <div class="price-row__save"><span class="price-label">절약</span><span class="price-save">110,000원 &darr;</span></div>
+          </div>
+          <div class="price-row">
+            <div class="price-row__original"><span class="price-label">정상가</span><span class="price-original">186,000원</span></div>
+            <div class="price-row__discount"><span class="discount-badge">65% 할인</span></div>
+            <div class="price-row__sale"><span class="price-label">행사가</span><span class="price-sale">59,000원</span></div>
+            <div class="price-row__save"><span class="price-label">절약</span><span class="price-save">127,000원 &darr;</span></div>
+          </div>
+          <div class="price-row">
+            <div class="price-row__original"><span class="price-label">정상가</span><span class="price-original">222,000원</span></div>
+            <div class="price-row__discount"><span class="discount-badge">65% 할인</span></div>
+            <div class="price-row__sale"><span class="price-label">행사가</span><span class="price-sale">79,000원</span></div>
+            <div class="price-row__save"><span class="price-label">절약</span><span class="price-save">143,000원 &darr;</span></div>
+          </div>
+          <div class="price-row price-row--premium">
+            <div class="price-row__original"><span class="price-label">정상가</span><span class="price-original">327,000원</span></div>
+            <div class="price-row__discount"><span class="discount-badge">70% 할인</span></div>
+            <div class="price-row__sale"><span class="price-label">행사가</span><span class="price-sale">99,000원</span></div>
+            <div class="price-row__save"><span class="price-label">절약</span><span class="price-save">228,000원 &darr;</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lens-section section" id="lens">
+    <div class="container">
+      <div class="section__header">
+        <span class="section__tag">BLUE LIGHT LENS</span>
+        <h2 class="section__title">&hearts; 안경렌즈 할인 행사</h2>
+        <p class="section__desc">블루라이트 청광 렌즈 특별 할인 &middot; 디지털 눈 건강을 지키세요</p>
+        <div class="discount-range-badge lens-badge">할인율 50% ~ 70%</div>
+      </div>
+      <div class="lens-cards">
+        <div class="lens-card">
+          <div class="lens-card__rank">1번 압축</div>
+          <div class="lens-card__features">
+            <span class="feature-tag">블루라이트 차단</span>
+            <span class="feature-tag">기본형</span>
+          </div>
+          <div class="lens-card__prices">
+            <span class="lens-original">30,000원</span>
+            <span class="lens-arrow">&rarr;</span>
+            <span class="lens-sale">10,000원</span>
+          </div>
+          <div class="lens-card__discount-info">약 67% 할인</div>
+        </div>
+        <div class="lens-card">
+          <div class="lens-card__rank">2번 압축</div>
+          <div class="lens-card__features">
+            <span class="feature-tag">블루라이트 차단</span>
+            <span class="feature-tag">경량형</span>
+          </div>
+          <div class="lens-card__prices">
+            <span class="lens-original">45,000원</span>
+            <span class="lens-arrow">&rarr;</span>
+            <span class="lens-sale">20,000원</span>
+          </div>
+          <div class="lens-card__discount-info">약 56% 할인</div>
+        </div>
+        <div class="lens-card lens-card--popular">
+          <div class="lens-card__popular-tag">&#11088; 인기</div>
+          <div class="lens-card__rank">2번 비구면</div>
+          <div class="lens-card__features">
+            <span class="feature-tag">블루라이트 차단</span>
+            <span class="feature-tag">비구면 고급형</span>
+          </div>
+          <div class="lens-card__prices">
+            <span class="lens-original">90,000원</span>
+            <span class="lens-arrow">&rarr;</span>
+            <span class="lens-sale">30,000원</span>
+          </div>
+          <div class="lens-card__discount-info">약 67% 할인</div>
+        </div>
+        <div class="lens-card">
+          <div class="lens-card__rank">3번 압축</div>
+          <div class="lens-card__features">
+            <span class="feature-tag">블루라이트 차단</span>
+            <span class="feature-tag">고굴절</span>
+          </div>
+          <div class="lens-card__prices">
+            <span class="lens-original">120,000원</span>
+            <span class="lens-arrow">&rarr;</span>
+            <span class="lens-sale">40,000원</span>
+          </div>
+          <div class="lens-card__discount-info">약 67% 할인</div>
+        </div>
+        <div class="lens-card">
+          <div class="lens-card__rank">4번 압축</div>
+          <div class="lens-card__features">
+            <span class="feature-tag">블루라이트 차단</span>
+            <span class="feature-tag">초고굴절 프리미엄</span>
+          </div>
+          <div class="lens-card__prices">
+            <span class="lens-original">170,000원</span>
+            <span class="lens-arrow">&rarr;</span>
+            <span class="lens-sale">50,000원</span>
+          </div>
+          <div class="lens-card__discount-info">약 71% 할인</div>
+        </div>
+      </div>
+      <div class="lens-notice">
+        <div class="notice-icon">&#128161;</div>
+        <div class="notice-text">
+          <strong>블루라이트(청광) 렌즈란?</strong><br/>
+          스마트폰&middot;컴퓨터&middot;TV에서 방출되는 유해 블루라이트를 차단하여 눈의 피로를 줄여주는 기능성 렌즈입니다.
+          디지털 기기 사용이 많은 현대인에게 필수!
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sunglass-section section" id="sunglass">
+    <div class="container">
+      <div class="section__header">
+        <span class="section__tag">SUNGLASSES</span>
+        <h2 class="section__title">&hearts; 선글라스 / 누진다초점</h2>
+        <p class="section__desc">봄&middot;여름 시즌 선글라스 특별 할인 &middot; 아이들도 OK!</p>
+      </div>
+      <div class="sunglass-grid">
+        <div class="sunglass-item">
+          <div class="sunglass-item__emoji">&#128083;</div>
+          <h3 class="sunglass-item__title">성인 선글라스</h3>
+          <div class="sunglass-item__discount">30% ~ 70% 할인</div>
+          <p class="sunglass-item__desc">다양한 브랜드와 스타일의 선글라스를 특별 할인 가격으로 만나보세요.</p>
+          <a href="#contact" class="sunglass-item__cta">상담 문의하기</a>
+        </div>
+        <div class="sunglass-item sunglass-item--kids">
+          <div class="sunglass-item__emoji">&#128118;</div>
+          <div class="kids-special-badge">특별 행사가</div>
+          <h3 class="sunglass-item__title">소아 선글라스</h3>
+          <div class="sunglass-item__price-special">
+            <span class="price-flat">단돈</span>
+            <span class="price-amount">20,000원</span>
+          </div>
+          <p class="sunglass-item__desc">아이들의 눈 건강을 지키는 UV 차단 소아용 선글라스. 자녀와 함께 방문하세요!</p>
+          <a href="#contact" class="sunglass-item__cta">매장 방문하기</a>
+        </div>
+        <div class="sunglass-item">
+          <div class="sunglass-item__emoji">&#127919;</div>
+          <h3 class="sunglass-item__title">누진다초점</h3>
+          <div class="sunglass-item__discount">30% ~ 50% 할인</div>
+          <p class="sunglass-item__desc">가까운 거리와 먼 거리를 자유롭게! 수입 고급 브랜드부터 국산까지 상담해 드립니다.</p>
+          <a href="#contact" class="sunglass-item__cta">전문 상담 받기</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  
+
+  
+
+  <section class="contact section" id="contact">
+    <div class="container">
+      <div class="section__header">
+        <span class="section__tag">LOCATION</span>
+        <h2 class="section__title">오시는 길</h2>
+        <p class="section__desc">배곧신도시에 위치한 글라스미 안경 배곧점을 방문해주세요</p>
+      </div>
+      <div class="contact-layout">
+        <div class="contact-info">
+          <div class="contact-card">
+            <h3 class="contact-card__title">글라스미 안경 배곧점</h3>
+            <div class="contact-detail">
+              <span class="contact-icon">&#128222;</span>
+              <div>
+                <span class="contact-label">전화번호</span>
+                <a href="tel:031-433-0880" class="contact-value">031-433-0880</a>
+              </div>
+            </div>
+            <div class="contact-detail">
+              <span class="contact-icon">&#128336;</span>
+              <div>
+                <span class="contact-label">영업시간</span>
+                <span class="contact-value">10:00 ~ 21:00</span>
+              </div>
+            </div>
+            <div class="contact-detail">
+              <span class="contact-icon">&#128205;</span>
+              <div>
+                <span class="contact-label">위치</span>
+                <span class="contact-value">경기 시흥시 배곧3로 96, M-플러스 132호</span>
+              </div>
+            </div>
+            <div class="contact-actions">
+              
+              <a href="https://map.naver.com/p/entry/place/1002939667" target="_blank" rel="noopener noreferrer" class="contact-btn contact-btn--map">
+                &#128506; 네이버 지도
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="contact-map">
+          <div class="map-embed-wrapper">
+            <a href="https://map.naver.com/p/entry/place/1002939667" target="_blank" rel="noopener noreferrer" class="map-img-link">
+              <img src="images/naver_map_capture.jpg" alt="글라스미 안경 배곧점 네이버 지도" class="map-capture-img" />
+              <div class="map-overlay-badge">🗺️ 지도 크게보기 (클릭)</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <span class="footer__logo">&#128083; 글라스미 안경 배곧점</span>
+          <p class="footer__tagline">GLASSME EYEWEAR &middot; 배곧의 프리미엄 안경전문점</p>
+        </div>
+        <div class="footer__links">
+          <a href="#hero">홈</a>
+          <a href="#sale">행사 안내</a>
+          <a href="#frames">안경테</a>
+          <a href="#lens">안경렌즈</a>
+          <a href="#sunglass">선글라스</a>
+          <a href="#gallery">매장 전경</a>
+          <a href="#contact">오시는 길</a>
+        </div>
+      </div>
+      <div class="footer__bottom">
+        <p>&#128222; 031-433-0880 | 경기도 시흥시 배곧신도시</p>
+        <p class="footer__copy">&#169; 2026 글라스미 안경 배곧점. All rights reserved.</p>
+      </div>
+    </div>
+  </footer>
+
+  <div class="floating-cta" id="floatingCta">
+    
+    <a href="https://map.naver.com/p/entry/place/1002939667" target="_blank" rel="noopener noreferrer" class="floating-btn floating-btn--map" aria-label="지도 보기">
+      <span class="floating-icon">&#128205;</span>
+      <span class="floating-label">지도 보기</span>
+    </a>
+  </div>
+
+  <button class="back-to-top" id="backToTop" onclick="scrollToTop()" aria-label="맨 위로">&#8679;</button>
+
+  <script src="script.js"></script>
+</body>
+</html>
