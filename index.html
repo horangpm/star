@@ -1,226 +1,1294 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>HAM SSAM — 우주의 기운으로 읽는 당신의 이야기</title>
-  <meta name="description" content="도형심리분석, 별자리차트, 운명비밀사주로 나를 발견하는 특별한 시간" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@300;400;600&family=Noto+Sans+KR:wght@300;400;500&family=Cinzel:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="css/style.css" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🔮 함쌤의 별자리 분석</title>
+<meta name="description" content="생년월일·탄생시간·탄생장소로 나만의 별자리 차트를 생성하세요.">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Sans+KR:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" defer></script>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --purple: #8B5CF6; --purple-l: #a78bfa;
+  --gold: #F59E0B;   --gold-l: #fcd34d;
+  --cyan: #06B6D4;   --cyan-l: #67e8f9;
+  --white: #f0f0ff;  --gray: #94a3b8;
+  --card: rgba(255,255,255,0.04);
+  --border: rgba(139,92,246,0.3);
+}
+body { background: #03030f; color: var(--white); font-family: 'Noto Sans KR', sans-serif; min-height: 100vh; overflow-x: hidden; }
+canvas#stars { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+
+/* ── NEBULA ── */
+.nebula { position: fixed; inset: 0; z-index: 0; pointer-events: none; }
+.nebula::before { content:''; position:absolute; width:700px; height:700px; background:radial-gradient(circle,rgba(139,92,246,0.13) 0%,transparent 70%); top:-200px; left:-200px; animation:neb1 18s ease-in-out infinite alternate; }
+.nebula::after  { content:''; position:absolute; width:500px; height:500px; background:radial-gradient(circle,rgba(6,182,212,0.09) 0%,transparent 70%); bottom:-100px; right:-100px; animation:neb2 14s ease-in-out infinite alternate; }
+@keyframes neb1 { from{transform:translate(0,0)} to{transform:translate(50px,30px) scale(1.15)} }
+@keyframes neb2 { from{transform:translate(0,0)} to{transform:translate(-30px,-50px) scale(1.1)} }
+
+/* ── SECTIONS ── */
+.z1 { position: relative; z-index: 1; }
+
+/* ── LANDING ── */
+#landing { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 20px; }
+.land-box { max-width:520px; width:100%; text-align:center; }
+.badge { display:inline-block; background:linear-gradient(135deg,rgba(139,92,246,0.2),rgba(6,182,212,0.2)); border:1px solid rgba(139,92,246,0.4); border-radius:50px; padding:6px 22px; font-family:'Cinzel',serif; font-size:.72rem; letter-spacing:3px; color:var(--purple-l); margin-bottom:22px; }
+h1.logo { font-family:'Cinzel',serif; font-size:clamp(2rem,6vw,3rem); font-weight:700; background:linear-gradient(135deg,#f0f0ff,#a78bfa 50%,#67e8f9); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; line-height:1.2; margin-bottom:14px; }
+.sub { color:var(--gray); font-size:.95rem; margin-bottom:44px; }
+
+/* ── FORM ── */
+.form-wrap { background:rgba(255,255,255,0.03); border:1px solid var(--border); border-radius:24px; padding:36px 32px; backdrop-filter:blur(20px); box-shadow:0 0 60px rgba(139,92,246,0.08); }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.fg { margin-bottom:18px; text-align:left; }
+.fg label { display:block; font-size:.75rem; font-weight:500; color:var(--purple-l); letter-spacing:1px; margin-bottom:7px; }
+.fg input { width:100%; padding:13px 16px; background:rgba(255,255,255,0.05); border:1px solid var(--border); border-radius:11px; color:var(--white); font-family:inherit; font-size:.93rem; outline:none; transition:.3s; }
+.fg input:focus { border-color:var(--purple); box-shadow:0 0 18px rgba(139,92,246,0.25); background:rgba(139,92,246,0.06); }
+.fg input::placeholder { color:rgba(148,163,184,0.45); }
+.fg input::-webkit-calendar-picker-indicator { filter:invert(.6) sepia(1) saturate(4) hue-rotate(240deg); }
+.btn-main { width:100%; padding:15px; background:linear-gradient(135deg,#8B5CF6,#6366F1); border:none; border-radius:13px; color:#fff; font-family:'Cinzel',serif; font-size:.95rem; font-weight:600; letter-spacing:2px; cursor:pointer; transition:.3s; box-shadow:0 4px 20px rgba(139,92,246,0.35); }
+.btn-main:hover { transform:translateY(-2px); box-shadow:0 8px 28px rgba(139,92,246,0.55); }
+
+/* ── LOADING ── */
+#loading { display:none; position:fixed; inset:0; background:rgba(3,3,15,.96); z-index:200; align-items:center; justify-content:center; flex-direction:column; gap:22px; }
+.loader { width:76px; height:76px; position:relative; }
+.loader::before,.loader::after { content:''; position:absolute; border-radius:50%; animation:spin 1.4s linear infinite; }
+.loader::before { inset:0; border:2px solid transparent; border-top-color:var(--purple); border-right-color:var(--cyan); }
+.loader::after { inset:14px; border:2px solid transparent; border-bottom-color:var(--gold); animation-duration:.9s; animation-direction:reverse; }
+@keyframes spin { to{transform:rotate(360deg)} }
+.load-txt { font-family:'Cinzel',serif; font-size:.85rem; letter-spacing:3px; color:var(--purple-l); animation:blink 1.8s ease-in-out infinite; }
+@keyframes blink { 0%,100%{opacity:.5} 50%{opacity:1} }
+
+/* ── APP ── */
+#app { display:none; z-index:1; padding:0 20px 80px; }
+.container { max-width:1080px; margin:0 auto; }
+.app-head { text-align:center; padding:56px 20px 36px; }
+.app-name { font-family:'Cinzel',serif; font-size:clamp(1.5rem,3.5vw,2.2rem); background:linear-gradient(135deg,#f0f0ff,#a78bfa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+.app-info { color:var(--gray); font-size:.85rem; margin-top:8px; }
+.btn-back { background:none; border:1px solid var(--border); border-radius:50px; padding:9px 22px; color:var(--purple-l); font-family:inherit; font-size:.82rem; cursor:pointer; transition:.3s; }
+.btn-back:hover { background:rgba(139,92,246,0.1); }
+
+/* ── PLANET STRIP ── */
+.p-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; margin-bottom:44px; }
+.p-card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px 12px; text-align:center; transition:.3s; }
+.p-card:hover { transform:translateY(-4px); box-shadow:0 8px 28px rgba(139,92,246,0.14); }
+.p-icon { font-size:1.7rem; margin-bottom:7px; }
+.p-label { font-size:.68rem; color:var(--gray); margin-bottom:3px; letter-spacing:1px; }
+.p-sign { font-size:1rem; font-weight:600; }
+.p-deg { font-size:.72rem; color:var(--gray); margin-top:2px; }
+
+/* ── GRID ── */
+.main-grid { display:grid; grid-template-columns:400px 1fr; gap:28px; margin-bottom:40px; }
+@media(max-width:860px){.main-grid{grid-template-columns:1fr;}}
+
+/* ── CHART ── */
+.chart-wrap { background:var(--card); border:1px solid var(--border); border-radius:22px; padding:22px; text-align:center; }
+.chart-wrap h3 { font-family:'Cinzel',serif; font-size:.8rem; letter-spacing:3px; color:var(--purple-l); margin-bottom:16px; }
+#chartSvg { width:100%; max-width:370px; height:auto; }
+
+/* ── CARDS ── */
+.card { background:var(--card); border:1px solid var(--border); border-radius:14px; padding:24px; margin-bottom:20px; }
+.card h2 { font-family:'Cinzel',serif; font-size:.9rem; letter-spacing:2px; color:var(--gold-l); margin-bottom:16px; padding-bottom:10px; border-bottom:1px solid rgba(245,158,11,0.18); }
+.card p, .card li { color:#c8c8e8; font-size:.87rem; line-height:1.85; }
+
+/* ── TRAITS ── */
+.traits { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:14px; }
+.t-box { padding:14px; border-radius:11px; }
+.t-box.pos { background:rgba(132,204,22,.06); border:1px solid rgba(132,204,22,.2); }
+.t-box.neg { background:rgba(239,68,68,.06); border:1px solid rgba(239,68,68,.2); }
+.t-box h4 { font-family:'Cinzel',serif; font-size:.75rem; letter-spacing:1px; margin-bottom:10px; }
+.t-box.pos h4 { color:#86efac; } .t-box.neg h4 { color:#fca5a5; }
+.t-box ul { list-style:none; }
+.t-box ul li { font-size:.82rem; color:#c8c8e8; padding:4px 0; display:flex; gap:7px; }
+.t-box.pos ul li::before { content:'✦'; color:#86efac; font-size:.65rem; margin-top:4px; flex-shrink:0; }
+.t-box.neg ul li::before { content:'◇'; color:#fca5a5; font-size:.65rem; margin-top:4px; flex-shrink:0; }
+
+/* ── ELEMENT BADGES ── */
+.el-row { display:flex; gap:12px; flex-wrap:wrap; margin:12px 0; }
+.el-chip { padding:7px 15px; border-radius:50px; font-size:.8rem; font-weight:500; }
+.el-chip.fire { background:rgba(239,68,68,.1); border:1px solid rgba(239,68,68,.3); color:#fca5a5; }
+.el-chip.earth{ background:rgba(132,204,22,.1); border:1px solid rgba(132,204,22,.3); color:#bbf7d0; }
+.el-chip.air  { background:rgba(96,165,250,.1); border:1px solid rgba(96,165,250,.3); color:#bae6fd; }
+.el-chip.water{ background:rgba(129,140,248,.1); border:1px solid rgba(129,140,248,.3); color:#c4b5fd; }
+
+/* ── FORTUNE ── */
+.f-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:14px; }
+.f-item { padding:16px; border-radius:12px; background:rgba(139,92,246,.05); border:1px solid rgba(139,92,246,.2); }
+.f-item h4 { font-family:'Cinzel',serif; font-size:.73rem; letter-spacing:1px; color:var(--purple-l); margin-bottom:8px; }
+.f-item p { font-size:.82rem; color:#c8c8e8; line-height:1.8; }
+.f-item .advice { margin-top:8px; padding:8px 12px; border-radius:8px; background:rgba(245,158,11,0.06); border-left:3px solid rgba(245,158,11,0.4); font-size:.78rem; color:#fcd34d; line-height:1.7; }
+.stars { font-size:.72rem; color:var(--gold-l); margin-top:6px; }
+.fortune-summary { padding:20px; border-radius:14px; background:linear-gradient(135deg,rgba(139,92,246,0.08),rgba(6,182,212,0.06)); border:1px solid rgba(139,92,246,0.25); margin-bottom:18px; }
+.fortune-summary p { font-size:.88rem; color:#d8d8f0; line-height:1.95; }
+.fortune-summary strong { color:var(--white); }
+
+/* ── MONTHLY ── */
+.m-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:12px; margin-top:14px; }
+.m-card { padding:14px; border-radius:11px; background:rgba(6,182,212,.05); border:1px solid rgba(6,182,212,.18); text-align:center; }
+.m-card .mn { font-family:'Cinzel',serif; font-size:.75rem; letter-spacing:2px; color:var(--cyan-l); margin-bottom:7px; }
+.m-card .mr { font-size:1rem; margin-bottom:5px; }
+.m-card .md { font-size:.76rem; color:var(--gray); line-height:1.6; }
+
+/* ── COMPAT ── */
+.c-row { display:flex; flex-wrap:wrap; gap:9px; margin-top:12px; }
+.c-chip { padding:5px 14px; border-radius:50px; font-size:.8rem; }
+.c-chip.g { background:rgba(132,204,22,.1); border:1px solid rgba(132,204,22,.3); color:#bbf7d0; }
+.c-chip.b { background:rgba(239,68,68,.08); border:1px solid rgba(239,68,68,.25); color:#fca5a5; }
+.compat-detail { margin-top:14px; }
+.compat-card { padding:14px 16px; border-radius:11px; margin-bottom:10px; }
+.compat-card:last-child { margin-bottom:0; }
+.compat-card.good { background:rgba(132,204,22,.04); border:1px solid rgba(132,204,22,.15); }
+.compat-card.bad { background:rgba(239,68,68,.04); border:1px solid rgba(239,68,68,.12); }
+.compat-card h5 { font-size:.85rem; font-weight:700; margin-bottom:6px; }
+.compat-card.good h5 { color:#86efac; }
+.compat-card.bad h5 { color:#fca5a5; }
+.compat-card p { font-size:.82rem; color:#c8c8e8; line-height:1.8; }
+.need-box { margin-top:20px; padding:20px; border-radius:14px; background:linear-gradient(135deg,rgba(6,182,212,0.06),rgba(139,92,246,0.06)); border:1px solid rgba(6,182,212,0.25); }
+.need-box h4 { font-family:'Cinzel',serif; font-size:.82rem; letter-spacing:1px; color:var(--cyan-l); margin-bottom:12px; }
+.need-box p { font-size:.84rem; color:#c8c8e8; line-height:1.9; }
+.need-box strong { color:var(--white); }
+
+/* ── PLANET MEANING ── */
+.pm-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:4px; }
+.pm-item { padding:18px; border-radius:13px; background:rgba(255,255,255,0.03); border:1px solid rgba(139,92,246,0.18); transition:.3s; }
+.pm-item:hover { background:rgba(139,92,246,0.06); border-color:rgba(139,92,246,0.35); }
+.pm-top { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+.pm-icon { font-size:1.6rem; }
+.pm-info {} 
+.pm-title { font-size:.95rem; font-weight:700; margin-bottom:2px; }
+.pm-role { font-size:.72rem; color:var(--gray); letter-spacing:1px; }
+.pm-desc { font-size:.83rem; color:#c8c8e8; line-height:1.85; }
+.pm-desc strong { color:var(--white); }
+
+/* ── HOUSES ── */
+.h-house-card { margin-bottom:18px; padding:20px; border-radius:14px; background:rgba(139,92,246,0.04); border:1px solid rgba(139,92,246,0.2); transition:.3s; }
+.h-house-card:hover { background:rgba(139,92,246,0.08); border-color:rgba(139,92,246,0.4); }
+.h-house-card:last-child { margin-bottom:0; }
+.h-head { display:flex; align-items:center; gap:14px; margin-bottom:12px; flex-wrap:wrap; }
+.h-num-badge { display:flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; background:rgba(139,92,246,0.15); border:1px solid rgba(139,92,246,0.4); font-family:'Cinzel',serif; font-size:1rem; font-weight:700; color:var(--purple-l); flex-shrink:0; }
+.h-head-info { flex:1; }
+.h-theme-txt { font-size:.95rem; font-weight:700; color:var(--white); margin-bottom:3px; }
+.h-sign-txt { font-size:.78rem; color:var(--gray); }
+.h-planets-strip { display:flex; gap:7px; flex-wrap:wrap; }
+.h-planet-tag { display:flex; align-items:center; gap:5px; padding:4px 10px; border-radius:50px; font-size:.76rem; font-weight:600; border:1px solid; }
+.h-body { border-top:1px solid rgba(139,92,246,0.12); padding-top:12px; }
+.h-body p { font-size:.86rem; color:#c8c8e8; line-height:1.9; margin-bottom:8px; }
+.h-body p:last-child { margin-bottom:0; }
+.h-body strong { color:var(--white); }
+.h-tip { display:flex; align-items:flex-start; gap:8px; padding:10px 13px; border-radius:9px; background:rgba(245,158,11,0.06); border:1px solid rgba(245,158,11,0.18); margin-top:10px; }
+.h-tip .tip-icon { font-size:1rem; flex-shrink:0; margin-top:1px; }
+.h-tip p { font-size:.81rem; color:#fcd34d; line-height:1.75; margin:0; }
+
+/* ── PDF BTN ── */
+.pdf-wrap { text-align:center; margin-top:44px; }
+.btn-pdf { display:inline-flex; align-items:center; gap:10px; padding:16px 44px; background:linear-gradient(135deg,rgba(245,158,11,.14),rgba(245,158,11,.04)); border:1px solid rgba(245,158,11,.45); border-radius:50px; color:var(--gold-l); font-family:'Cinzel',serif; font-size:.9rem; letter-spacing:2px; cursor:pointer; transition:.3s; }
+.btn-pdf:hover { box-shadow:0 0 40px rgba(245,158,11,.25); transform:translateY(-2px); }
+
+/* ── PDF HIDDEN ── */
+#pdf-root { display:none; }
+
+/* ── PRINT MEDIA QUERY ── */
+@media print {
+  @page { margin: 0; size: auto; }
+  body { background: #ffffff !important; overflow: visible !important; margin:0 !important; padding:0 !important; }
+  body > *:not(#pdf-root) { display: none !important; }
+  #pdf-root { display: block !important; position: static !important; width: 100% !important; margin: 0 !important; padding: 15mm 15mm 20mm !important; box-sizing: border-box !important; background:#ffffff !important; color:#334155 !important; }
+}
+.pdf-pb { break-before:page; page-break-before:always; }
+.pdf-h1 { font-family:'Cinzel',serif; font-size:1.8rem; color:#f0f0ff; text-align:center; margin-bottom:6px; }
+.pdf-sub { text-align:center; color:#a78bfa; font-family:'Cinzel',serif; font-size:.8rem; letter-spacing:4px; margin-bottom:16px; }
+.pdf-name { text-align:center; font-size:1.8rem; font-weight:700; color:#fcd34d; margin:14px 0 6px; }
+.pdf-info { text-align:center; color:#94a3b8; font-size:.88rem; margin-bottom:16px; }
+.pdf-ps { display:grid; grid-template-columns:repeat(4,1fr); gap:10px; margin:18px 0; }
+.pdf-pi { text-align:center; padding:12px 8px; border:1px solid rgba(139,92,246,.22); border-radius:11px; background:rgba(139,92,246,.04); }
+.pdf-pi .icon { font-size:1.3rem; } .pdf-pi .lbl { font-size:.62rem; color:#8B5CF6; margin:3px 0 2px; } .pdf-pi .val { font-size:.88rem; font-weight:600; }
+.pdf-sec { font-family:'Cinzel',serif; font-size:1rem; font-weight:700; color:#fcd34d; border-bottom:1px solid rgba(245,158,11,.25); padding-bottom:8px; margin:20px 0 12px; letter-spacing:2px; }
+.pdf-ssec { font-size:.82rem; font-weight:700; color:#a78bfa; margin:12px 0 6px; }
+.pdf-p { font-size:.85rem; line-height:1.85; color:#c8c8e8; }
+.pdf-tg { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin:10px 0; }
+.pdf-tb { padding:12px; border-radius:9px; }
+.pdf-tb.st { background:rgba(132,204,22,.06); border:1px solid rgba(132,204,22,.2); }
+.pdf-tb.wk { background:rgba(239,68,68,.06); border:1px solid rgba(239,68,68,.2); }
+.pdf-tb h5 { font-size:.76rem; font-weight:700; margin-bottom:7px; }
+.pdf-tb.st h5 { color:#86efac; } .pdf-tb.wk h5 { color:#fca5a5; }
+.pdf-tb ul { list-style:none; }
+.pdf-tb ul li { font-size:.79rem; color:#c8c8e8; padding:2px 0; display:flex; gap:5px; }
+.pdf-tb.st ul li::before { content:'✦'; color:#86efac; font-size:.6rem; margin-top:3px; }
+.pdf-tb.wk ul li::before { content:'◇'; color:#fca5a5; font-size:.6rem; margin-top:3px; }
+.pdf-fg { display:grid; grid-template-columns:1fr 1fr; gap:10px; margin:10px 0; }
+.pdf-fi { padding:12px; border-radius:9px; background:rgba(139,92,246,.04); border:1px solid rgba(139,92,246,.18); }
+.pdf-fi h5 { font-size:.73rem; color:#a78bfa; font-weight:700; margin-bottom:5px; }
+.pdf-fi p { font-size:.78rem; color:#c8c8e8; line-height:1.65; }
+.pdf-cr { display:flex; flex-wrap:wrap; gap:7px; margin:8px 0; }
+.pdf-cc { padding:3px 12px; border-radius:50px; font-size:.77rem; }
+.pdf-cc.g { background:rgba(132,204,22,.09); border:1px solid rgba(132,204,22,.28); color:#bbf7d0; }
+.pdf-cc.c { background:rgba(239,68,68,.09); border:1px solid rgba(239,68,68,.22); color:#fca5a5; }
+.pdf-ft { margin-top:auto; padding-top:14px; border-top:1px solid rgba(139,92,246,.18); text-align:center; font-size:.7rem; color:#475569; }
+.pdf-logo { color:#8B5CF6; font-weight:700; }
+
+@media(max-width:600px){.form-row,.traits,.f-grid,.m-grid,.p-strip{grid-template-columns:1fr 1fr;}.p-strip{grid-template-columns:repeat(2,1fr);}.form-wrap{padding:24px 18px;}}
+</style>
 </head>
 <body>
+<canvas id="stars"></canvas>
+<div class="nebula"></div>
 
-  <!-- 우주 배경 캔버스 -->
-  <canvas id="cosmos"></canvas>
-
-  <!-- 떠다니는 파티클들 -->
-  <div class="particles" id="particles"></div>
-
-  <!-- 헤더 -->
-  <header class="site-header">
-    <div class="logo">
-      <span class="logo-en">HAM SSAM</span>
-      <span class="logo-ko">함쌤</span>
+<!-- LANDING -->
+<section id="landing" class="z1">
+  <div class="land-box">
+    <div class="badge">✦ HAM SSAM STAR ✦</div>
+    <h1 class="logo">별자리 분석<br>우주 차트</h1>
+    <p class="sub">탄생의 순간, 별들이 당신에게 보낸 메시지</p>
+    <div class="form-wrap">
+      <form id="bForm">
+        <div class="fg">
+          <label>✦ 이름</label>
+          <input type="text" id="iName" placeholder="성함을 입력해 주세요" required>
+        </div>
+        <div class="form-row">
+          <div class="fg">
+            <label>☀ 생년월일</label>
+            <input type="date" id="iDate" required>
+          </div>
+          <div class="fg">
+            <label>🌙 탄생시간 (선택)</label>
+            <input type="time" id="iTime">
+          </div>
+        </div>
+        <div class="fg">
+          <label>🌍 탄생장소</label>
+          <input type="text" id="iPlace" placeholder="예: 서울, 부산, 도쿄, 뉴욕" required>
+        </div>
+        <button type="submit" class="btn-main">✨ 별자리 차트 생성</button>
+      </form>
     </div>
-    <nav class="gnav">
-      <a href="pages/shape.html">도형심리</a>
-      <a href="pages/star.html">별자리</a>
-      <a href="pages/saju.html">사주</a>
-      <a href="https://open.kakao.com/o/gbdfKQai" target="_blank" class="nav-cta">상담 신청</a>
-    </nav>
-    <button class="hamburger" id="hamburger" aria-label="메뉴 열기">
-      <span></span><span></span><span></span>
-    </button>
-  </header>
-
-  <!-- 모바일 메뉴 -->
-  <div class="mobile-menu" id="mobileMenu">
-    <a href="pages/shape.html">도형심리분석</a>
-    <a href="pages/star.html">별자리차트</a>
-    <a href="pages/saju.html">운명비밀사주</a>
-    <a href="https://open.kakao.com/o/gbdfKQai" target="_blank" class="mobile-cta">💬 카카오 상담 신청</a>
   </div>
+</section>
 
-  <!-- 히어로 섹션 -->
-  <section class="hero">
-    <div class="hero-content">
-      <p class="hero-sub">우주의 기운이 전하는 메시지</p>
-      <h1 class="hero-title">
-        <span class="line1">당신의 별자리</span>
-        <span class="line2">도형 심리</span>
-        <span class="line3">운명의 사주</span>
-      </h1>
-      <p class="hero-desc">함쌤이 우주의 언어로 당신의 본질을 읽어드립니다.<br />태어난 순간 새겨진 별의 지도를 함께 펼쳐보세요.</p>
-      <a href="https://open.kakao.com/o/gbdfKQai" target="_blank" class="btn-primary">
-        <span class="btn-glow"></span>
-        <span class="btn-text">✨ 지금 상담 시작하기</span>
-      </a>
+<!-- LOADING -->
+<div id="loading" style="display:none;">
+  <div class="loader"></div>
+  <div class="load-txt">우주의 별을 계산 중...</div>
+</div>
+
+<!-- APP -->
+<section id="app" class="z1">
+  <div class="container">
+    <div style="padding:20px 0 0;">
+      <button class="btn-back" onclick="goBack()">← 다시 입력</button>
     </div>
-    <div class="hero-orb">
-      <div class="orb orb-1"></div>
-      <div class="orb orb-2"></div>
-      <div class="orb orb-3"></div>
-      <div class="planet"></div>
-      <div class="ring"></div>
+    <div class="app-head">
+      <div class="app-name" id="dName"></div>
+      <div class="app-info" id="dInfo"></div>
     </div>
-  </section>
-
-  <!-- 3가지 서비스 카드 -->
-  <section class="services" id="services">
-    <div class="section-label">WHAT WE OFFER</div>
-    <h2 class="section-title">세 가지 우주의 언어</h2>
-
-    <div class="cards-grid">
-
-      <!-- 도형심리분석 -->
-      <a href="pages/shape.html" class="card card-shape float-1">
-        <div class="card-glow"></div>
-        <div class="card-icon">
-          <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <polygon points="30,8 54,48 6,48" stroke="url(#g1)" stroke-width="2" fill="none"/>
-            <circle cx="30" cy="30" r="10" stroke="url(#g1)" stroke-width="1.5" fill="none"/>
-            <rect x="18" y="18" width="24" height="24" stroke="url(#g1)" stroke-width="1" fill="none" opacity="0.5"/>
-            <defs>
-              <linearGradient id="g1" x1="0" y1="0" x2="60" y2="60">
-                <stop offset="0%" stop-color="#c084fc"/>
-                <stop offset="100%" stop-color="#60a5fa"/>
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-        <div class="card-num">01</div>
-        <h3 class="card-title">도형심리분석</h3>
-        <p class="card-desc">당신이 선택한 도형 속에 숨겨진 무의식의 언어. 심층 심리가 드러내는 진짜 나.</p>
-        <div class="card-tag">Shape Psychology</div>
-        <div class="card-arrow">→</div>
-      </a>
-
-      <!-- 별자리차트 -->
-      <a href="pages/star.html" class="card card-star float-2">
-        <div class="card-glow"></div>
-        <div class="card-icon">
-          <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="30" cy="30" r="22" stroke="url(#g2)" stroke-width="1" stroke-dasharray="3 3" fill="none"/>
-            <polygon points="30,10 33,22 46,22 36,30 39,42 30,34 21,42 24,30 14,22 27,22" stroke="url(#g2)" stroke-width="1.5" fill="none"/>
-            <circle cx="30" cy="30" r="3" fill="url(#g2)"/>
-            <defs>
-              <linearGradient id="g2" x1="0" y1="0" x2="60" y2="60">
-                <stop offset="0%" stop-color="#fbbf24"/>
-                <stop offset="100%" stop-color="#f472b6"/>
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-        <div class="card-num">02</div>
-        <h3 class="card-title">별자리차트</h3>
-        <p class="card-desc">탄생 순간 하늘이 그린 별자리 지도. 12궁의 배열이 전하는 운명의 청사진.</p>
-        <div class="card-tag">Astrology Chart</div>
-        <div class="card-arrow">→</div>
-      </a>
-
-      <!-- 운명비밀사주 -->
-      <a href="pages/saju.html" class="card card-saju float-3">
-        <div class="card-glow"></div>
-        <div class="card-icon">
-          <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="10" y="10" width="18" height="18" rx="3" stroke="url(#g3)" stroke-width="1.5" fill="none"/>
-            <rect x="32" y="10" width="18" height="18" rx="3" stroke="url(#g3)" stroke-width="1.5" fill="none"/>
-            <rect x="10" y="32" width="18" height="18" rx="3" stroke="url(#g3)" stroke-width="1.5" fill="none"/>
-            <rect x="32" y="32" width="18" height="18" rx="3" stroke="url(#g3)" stroke-width="1.5" fill="none"/>
-            <text x="19" y="23" font-size="10" fill="url(#g3)" text-anchor="middle" font-family="serif">甲</text>
-            <text x="41" y="23" font-size="10" fill="url(#g3)" text-anchor="middle" font-family="serif">子</text>
-            <text x="19" y="45" font-size="10" fill="url(#g3)" text-anchor="middle" font-family="serif">庚</text>
-            <text x="41" y="45" font-size="10" fill="url(#g3)" text-anchor="middle" font-family="serif">午</text>
-            <defs>
-              <linearGradient id="g3" x1="0" y1="0" x2="60" y2="60">
-                <stop offset="0%" stop-color="#34d399"/>
-                <stop offset="100%" stop-color="#818cf8"/>
-              </linearGradient>
-            </defs>
-          </svg>
-        </div>
-        <div class="card-num">03</div>
-        <h3 class="card-title">운명비밀사주</h3>
-        <p class="card-desc">사주팔자 속에 새겨진 당신만의 운명 코드. 천간지지가 펼치는 삶의 이야기.</p>
-        <div class="card-tag">Secret Destiny</div>
-        <div class="card-arrow">→</div>
-      </a>
-
+    <div class="p-strip" id="pStrip"></div>
+    <div class="card" style="margin-bottom:28px;">
+      <h2>🪐 주요 행성의 의미</h2>
+      <div id="pMeaning"></div>
     </div>
-  </section>
-
-  <!-- 함쌤 소개 -->
-  <section class="about">
-    <div class="about-inner">
-      <div class="about-deco">
-        <div class="deco-circle c1"></div>
-        <div class="deco-circle c2"></div>
-        <div class="deco-circle c3"></div>
+    <div class="main-grid">
+      <div class="chart-wrap">
+        <h3>✦ 네이탈 차트 ✦</h3>
+        <svg id="chartSvg" viewBox="0 0 370 370" xmlns="http://www.w3.org/2000/svg"></svg>
       </div>
-      <div class="about-text">
-        <div class="section-label">ABOUT HAM SSAM</div>
-        <h2>우주와 인간을 잇는<br /><em>함쌤</em>의 이야기</h2>
-        <p>오랜 시간 별과 사람을 공부해온 함쌤은 심리학, 점성술, 동양철학을 아우르는 독자적인 분석 방식으로 수많은 분들의 내면 여정을 함께해왔습니다.</p>
-        <p>우주의 법칙과 인간 심리가 교차하는 지점에서, 당신만의 고유한 이야기를 발견하도록 돕겠습니다.</p>
-        <a href="https://open.kakao.com/o/gbdfKQai" target="_blank" class="btn-secondary">카카오로 상담 문의 →</a>
+      <div>
+        <div class="card" id="cPersonality"><h2>☀ 성격 분석</h2><div id="dPersonality"></div></div>
+        <div class="card" id="cElement"><h2>◎ 원소 &amp; 에너지</h2><div id="dElement"></div></div>
       </div>
     </div>
-  </section>
-
-  <!-- 후기 섹션 -->
-  <section class="reviews">
-    <div class="section-label">REVIEWS</div>
-    <h2 class="section-title">별들이 전한 이야기들</h2>
-    <div class="reviews-grid">
-      <div class="review-card float-1">
-        <div class="stars">★★★★★</div>
-        <p>"도형 분석을 받고 나서 왜 그동안 그런 선택을 해왔는지 이해하게 됐어요. 정말 신기하고 깊이 있는 상담이었습니다."</p>
-        <span class="reviewer">— 30대 직장인 ㄱ님</span>
-      </div>
-      <div class="review-card float-2">
-        <div class="stars">★★★★★</div>
-        <p>"별자리 차트 해석이 제 상황과 너무 정확하게 맞아서 소름이 돋았어요. 앞으로의 방향이 조금 더 선명해진 느낌입니다."</p>
-        <span class="reviewer">— 20대 대학원생 ㅂ님</span>
-      </div>
-      <div class="review-card float-3">
-        <div class="stars">★★★★★</div>
-        <p>"사주 풀이가 단순히 운세를 보는 것이 아니라 제 본질적인 특성을 이해하는 시간이었습니다. 새로운 관점이 생겼어요."</p>
-        <span class="reviewer">— 40대 사업가 ㅇ님</span>
-      </div>
+    <div class="card"><h2>🌟 현재 운세</h2><div id="dFortune"></div></div>
+    <div class="card"><h2>📅 월별 운세 (3개월)</h2><div id="dMonthly"></div></div>
+    <div class="card"><h2>💫 인간관계 &amp; 궁합</h2><div id="dRelation"></div></div>
+    <div class="card"><h2>🏠 12하우스 분석</h2><div id="dHouse"></div></div>
+    <div class="pdf-wrap">
+      <button class="btn-pdf" id="pdfBtn">🖨️ PDF 인쇄 / 저장</button>
+      <p style="font-size:11px;color:#94a3b8;margin-top:10px;">인쇄 창이 뜨면 대상을 <b>'PDF로 저장'</b>으로 선택해주세요.</p>
     </div>
-  </section>
+  </div>
+</section>
 
-  <!-- CTA 섹션 -->
-  <section class="cta-section">
-    <div class="cta-inner">
-      <div class="cta-orb"></div>
-      <h2>지금 당신의 별을<br />만나러 오세요</h2>
-      <p>카카오 오픈채팅으로 언제든 편하게 문의하세요.<br />당신만을 위한 맞춤 상담이 기다립니다.</p>
-      <a href="https://open.kakao.com/o/gbdfKQai" target="_blank" class="btn-kakao">
-        <svg width="20" height="20" viewBox="0 0 20 20" fill="currentColor"><path d="M10 2C5.58 2 2 4.91 2 8.5c0 2.26 1.33 4.25 3.36 5.45L4.5 17.5l3.79-2.53c.55.08 1.13.12 1.71.12 4.42 0 8-2.91 8-6.5S14.42 2 10 2z"/></svg>
-        카카오로 상담 신청하기
-      </a>
-    </div>
-  </section>
+<div id="pdf-root"></div>
 
-  <!-- 푸터 -->
-  <footer class="site-footer">
-    <div class="footer-inner">
-      <div class="footer-logo">HAM SSAM<br/><small>함쌤의 우주상담소</small></div>
-      <div class="footer-links">
-        <a href="pages/shape.html">도형심리분석</a>
-        <a href="pages/star.html">별자리차트</a>
-        <a href="pages/saju.html">운명비밀사주</a>
-        <a href="https://open.kakao.com/o/gbdfKQai" target="_blank">카카오 상담</a>
-        <a href="admin/index.html">관리자</a>
-      </div>
-      <p class="footer-copy">© 2025 HAM SSAM. All rights reserved.</p>
-    </div>
-  </footer>
+<script>
+/* ─── STARS ─── */
+(function() {
+  var c = document.getElementById('stars');
+  var x = c.getContext('2d');
+  var stars = [];
+  function resize() { c.width = innerWidth; c.height = innerHeight; }
+  function init() {
+    stars = [];
+    for (var i = 0; i < 260; i++) {
+      stars.push({ x:Math.random()*c.width, y:Math.random()*c.height, r:Math.random()*1.4+0.2, a:Math.random(), da:(Math.random()-.5)*.005, dx:(Math.random()-.5)*.06, dy:(Math.random()-.5)*.06 });
+    }
+  }
+  function draw() {
+    x.clearRect(0,0,c.width,c.height);
+    stars.forEach(function(s) {
+      s.a += s.da; if(s.a<=0||s.a>=1) s.da=-s.da;
+      s.x += s.dx; s.y += s.dy;
+      if(s.x<0) s.x=c.width; if(s.x>c.width) s.x=0;
+      if(s.y<0) s.y=c.height; if(s.y>c.height) s.y=0;
+      x.beginPath(); x.arc(s.x,s.y,s.r,0,Math.PI*2);
+      x.fillStyle='rgba(200,200,255,'+s.a+')'; x.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize', function(){ resize(); init(); });
+  resize(); init(); draw();
+})();
 
-  <script src="js/cosmos.js"></script>
-  <script src="js/main.js"></script>
+/* ─── CONSTANTS ─── */
+var D2R = Math.PI / 180;
+var R2D = 180 / Math.PI;
+
+/* ─── CITY DATABASE ─── */
+var CITIES = {
+  '서울':   {lat:37.5665, lon:126.9780, tz:9},
+  '부산':   {lat:35.1796, lon:129.0756, tz:9},
+  '인천':   {lat:37.4563, lon:126.7052, tz:9},
+  '대구':   {lat:35.8714, lon:128.6014, tz:9},
+  '대전':   {lat:36.3504, lon:127.3845, tz:9},
+  '광주':   {lat:35.1595, lon:126.8526, tz:9},
+  '수원':   {lat:37.2636, lon:127.0286, tz:9},
+  '울산':   {lat:35.5384, lon:129.3114, tz:9},
+  '제주':   {lat:33.4996, lon:126.5312, tz:9},
+  '전주':   {lat:35.8242, lon:127.1480, tz:9},
+  '청주':   {lat:36.6424, lon:127.4890, tz:9},
+  '포항':   {lat:36.0190, lon:129.3435, tz:9},
+  '창원':   {lat:35.2279, lon:128.6811, tz:9},
+  '춘천':   {lat:37.8813, lon:127.7298, tz:9},
+  '천안':   {lat:36.8151, lon:127.1139, tz:9},
+  '도쿄':   {lat:35.6762, lon:139.6503, tz:9},
+  '오사카': {lat:34.6937, lon:135.5023, tz:9},
+  '뉴욕':   {lat:40.7128, lon:-74.006, tz:-5},
+  '런던':   {lat:51.5074, lon:-0.1278, tz:0},
+  '파리':   {lat:48.8566, lon:2.3522,  tz:1},
+  '베이징': {lat:39.9042, lon:116.4074,tz:8},
+  '상하이': {lat:31.2304, lon:121.4737,tz:8},
+  '방콕':   {lat:13.7563, lon:100.5018,tz:7},
+  '싱가포르':{lat:1.3521, lon:103.8198,tz:8},
+  '시드니': {lat:-33.8688,lon:151.2093,tz:10},
+  '홍콩':   {lat:22.3193, lon:114.1694,tz:8},
+  '타이베이':{lat:25.0330,lon:121.5654,tz:8}
+};
+
+function findCity(name) {
+  var n = name.trim();
+  if (CITIES[n]) return CITIES[n];
+  var keys = Object.keys(CITIES);
+  for (var i = 0; i < keys.length; i++) {
+    if (n.indexOf(keys[i]) >= 0 || keys[i].indexOf(n) >= 0) return CITIES[keys[i]];
+  }
+  return CITIES['서울'];
+}
+
+/* ─── ASTRONOMY ─── */
+function norm(a) { return ((a % 360) + 360) % 360; }
+
+function toJD(yr, mo, dy, hr, mn, tz) {
+  var uh = hr - tz + mn / 60;
+  var d = dy + uh / 24;
+  var m = mo, y = yr;
+  if (m <= 2) { y--; m += 12; }
+  var A = Math.floor(y / 100);
+  var B = 2 - A + Math.floor(A / 4);
+  return Math.floor(365.25 * (y + 4716)) + Math.floor(30.6001 * (m + 1)) + d + B - 1524.5;
+}
+
+function calcSun(jd) {
+  var T = (jd - 2451545) / 36525;
+  var L = norm(280.46646 + 36000.76983 * T + 0.0003032 * T * T);
+  var M = norm(357.52911 + 35999.05029 * T - 0.0001537 * T * T);
+  var Mr = M * D2R;
+  var C = (1.914602 - 0.004817 * T - 0.000014 * T * T) * Math.sin(Mr)
+        + (0.019993 - 0.000101 * T) * Math.sin(2 * Mr)
+        + 0.000289 * Math.sin(3 * Mr);
+  return norm(L + C);
+}
+
+function calcMoon(jd) {
+  var T = (jd - 2451545) / 36525;
+  var L  = 218.3164477 + 481267.88123421 * T - 0.0015786 * T * T;
+  var M  = norm(134.9633964 + 477198.8676313 * T + 0.0089970 * T * T) * D2R;
+  var Ms = norm(357.5291092 + 35999.0502909  * T) * D2R;
+  var F  = norm(93.2720950  + 483202.0175233 * T - 0.0036539 * T * T) * D2R;
+  var D  = norm(297.8501921 + 445267.1114034 * T - 0.0018819 * T * T) * D2R;
+  var c  = 6.288774*Math.sin(M)
+         + 1.274027*Math.sin(2*D-M)
+         + 0.658314*Math.sin(2*D)
+         + 0.213618*Math.sin(2*M)
+         - 0.185116*Math.sin(Ms)
+         - 0.114332*Math.sin(2*F)
+         + 0.058793*Math.sin(2*D-2*M)
+         + 0.057066*Math.sin(2*D-Ms-M)
+         + 0.053322*Math.sin(2*D+M);
+  return norm(L + c);
+}
+
+function calcMercury(jd) {
+  var T = (jd - 2451545) / 36525;
+  var L  = norm(252.2509 + 149472.6746 * T);
+  var M  = norm(174.7948 + 149472.5153 * T) * D2R;
+  var Ms = norm(357.5291 + 35999.0503  * T) * D2R;
+  return norm(L + 23.44*Math.sin(M) + 2.9818*Math.sin(2*M) + 0.5255*Math.sin(3*M) - 0.1800*Math.sin(Ms));
+}
+
+function calcVenus(jd) {
+  var T = (jd - 2451545) / 36525;
+  var L = norm(181.9798 + 58517.8156 * T);
+  var M = norm(212.3464 + 58517.8039 * T) * D2R;
+  return norm(L + 0.7758*Math.sin(M) + 0.0033*Math.sin(2*M));
+}
+
+function calcMars(jd) {
+  var T = (jd - 2451545) / 36525;
+  var L = norm(355.4332 + 19140.2993 * T);
+  var M = norm(19.373   + 19140.3012 * T) * D2R;
+  return norm(L + 10.6912*Math.sin(M) + 0.6228*Math.sin(2*M));
+}
+
+function calcJupiter(jd) {
+  var T = (jd - 2451545) / 36525;
+  var L = norm(34.3515  + 3034.9057 * T);
+  var M = norm(20.9121  + 3034.7354 * T) * D2R;
+  return norm(L + 5.5549*Math.sin(M) + 0.1683*Math.sin(2*M));
+}
+
+function calcSaturn(jd) {
+  var T = (jd - 2451545) / 36525;
+  var L = norm(50.0774  + 1222.1138 * T);
+  var M = norm(317.0207 + 1222.1139 * T) * D2R;
+  return norm(L + 6.3585*Math.sin(M) + 0.2204*Math.sin(2*M));
+}
+
+function calcASC(jd, lat, lon) {
+  var T    = (jd - 2451545) / 36525;
+  var GMST = norm(280.46061837 + 360.98564736629*(jd-2451545) + 0.000387933*T*T);
+  var UT   = ((jd + 0.5) % 1) * 360;
+  var LST  = norm(GMST + lon + UT);
+  var E    = 23.4393 - 0.0130 * T;
+  var e    = E * D2R;
+  var phi  = lat * D2R;
+  var RAMC = LST * D2R;
+  var asc  = Math.atan2(-Math.cos(RAMC), Math.sin(RAMC)*Math.cos(e) + Math.tan(phi)*Math.sin(e)) * R2D;
+  return norm(asc);
+}
+
+var SKEYS = ['aries','taurus','gemini','cancer','leo','virgo','libra','scorpio','sagittarius','capricorn','aquarius','pisces'];
+
+function lonToSign(lon) {
+  var idx = Math.floor(lon / 30);
+  if (idx < 0) idx = 0;
+  if (idx > 11) idx = 11;
+  return { key: SKEYS[idx], idx: idx, deg: (lon % 30).toFixed(1) };
+}
+
+/* ─── SIGN DATA ─── */
+var SD = {
+  aries:        { ko:'양자리',   sym:'♈', el:'fire',  mo:'cardinal', ruler:'화성',   color:'#EF4444', desc:'단순하고 용감한 전사, 개척자', personality:'화성이 지배하는 양자리는 황도대의 첫 번째 별자리로 봄의 탄생 에너지를 담고 있습니다. 새로운 것에 두려움 없이 도전하는 개척자 기질을 타고났으며, 직접적이고 솔직한 표현으로 강한 인상을 남깁니다. 불의 원소와 추진자 에너지를 동시에 지니어 행동력과 열정이 넘칩니다.', love:'열정적이고 직접적으로 감정을 표현합니다. 새로운 경험과 모험을 함께할 파트너를 원합니다.', strengths:['강한 용기와 결단력','열정적인 행동력','솔직하고 직접적인 소통','리더십과 추진력','새로운 것에 대한 개방성'], weaknesses:['충동적이고 경솔한 경향','인내심 부족','자기중심적 사고','쉽게 흥미를 잃음','분노 조절 어려움'], compat:['사자자리','사수자리','쌍둥이자리','물병자리'], challenge:['게자리','염소자리'], fortune:'화성의 강렬한 에너지가 새로운 도전을 이끕니다.', house7:'천칭자리' },
+  taurus:       { ko:'황소자리', sym:'♉', el:'earth', mo:'fixed',    ruler:'금성',   color:'#84CC16', desc:'든든하고 고집스러운 유지자', personality:'금성이 지배하는 황소자리는 안정과 풍요를 사랑합니다. 오감이 발달하여 아름다운 것과 편안한 것을 즐기며 삶의 질을 중요시합니다. 한번 결심하면 끝까지 밀고 나가는 강한 의지력으로 신뢰와 안정감을 줍니다.', love:'천천히 신중하게 접근하며 안정적인 관계를 추구합니다. 실질적인 방식으로 사랑을 표현합니다.', strengths:['끈기있고 강한 인내심','신뢰할 수 있는 안정감','뛰어난 미적 감각','현실적인 판단력','따뜻하고 충직한 마음'], weaknesses:['변화에 대한 강한 저항','고집스럽고 완고함','물질주의적 성향','소유욕과 질투심','게으름에 빠질 수 있음'], compat:['처녀자리','염소자리','게자리','물고기자리'], challenge:['사자자리','물병자리'], fortune:'금성의 풍요로운 에너지가 재정과 관계에 행운을 가져옵니다.', house7:'전갈자리' },
+  gemini:       { ko:'쌍둥이자리', sym:'♊', el:'air',  mo:'mutable',  ruler:'수성',   color:'#60A5FA', desc:'호기심 많고 반짝이는 메신저', personality:'수성이 지배하는 쌍둥이자리는 지식과 소통을 사랑합니다. 다양한 관심사와 재능을 가졌으며, 빠른 사고와 재치 있는 대화로 어디서든 환영받습니다. 끊임없는 호기심으로 새로운 정보를 흡수합니다.', love:'지적인 대화와 정신적 연결을 중시합니다. 자유롭고 다양한 경험을 공유할 파트너를 원합니다.', strengths:['뛰어난 커뮤니케이션 능력','빠른 적응력과 유연성','다재다능한 재능','유머와 재치','지적 호기심'], weaknesses:['일관성 부족','변덕스럽고 우유부단','쉽게 산만해짐','감정보다 이성 우선','과도한 수다스러움'], compat:['천칭자리','물병자리','양자리','사자자리'], challenge:['처녀자리','물고기자리'], fortune:'수성의 활발한 에너지가 소통과 학습에 날개를 달아줍니다.', house7:'사수자리' },
+  cancer:       { ko:'게자리',   sym:'♋', el:'water', mo:'cardinal', ruler:'달',    color:'#818CF8', desc:'정서가 풍부한 양육자', personality:'달이 지배하는 게자리는 감정의 깊이가 남다릅니다. 가족과 가정을 소중히 여기며 주변 사람들의 감정을 예민하게 파악합니다. 겉으로는 단단하지만 속으로는 섬세하고 부드럽습니다.', love:'깊고 헌신적인 사랑을 추구합니다. 가정을 이루는 꿈을 가지며 파트너에게 완전한 감정적 안정감을 줍니다.', strengths:['깊은 공감 능력','강한 직관력','가족에 대한 헌신','섬세하고 사려깊음','강한 기억력'], weaknesses:['감정 기복이 심함','과거에 집착하는 경향','지나친 보호 본능','기분 변화가 잦음','자기 연민'], compat:['전갈자리','물고기자리','황소자리','처녀자리'], challenge:['양자리','천칭자리'], fortune:'달의 변화하는 에너지가 감정과 직관을 강화합니다.', house7:'염소자리' },
+  leo:          { ko:'사자자리', sym:'♌', el:'fire',  mo:'fixed',    ruler:'태양',  color:'#F59E0B', desc:'통이 크고 관대한 지배자', personality:'태양이 지배하는 사자자리는 황도대의 왕입니다. 무대 중심에 서는 것을 좋아하며 관대하게 베풀고 화려하게 빛나는 것을 즐깁니다. 자연스러운 카리스마와 리더십으로 주변을 이끕니다.', love:'로맨틱하고 열정적으로 사랑합니다. 상대를 왕처럼 대우하며 그에 걸맞는 존중을 받길 원합니다.', strengths:['자연스러운 리더십','관대하고 따뜻한 마음','강한 창의성','충성스럽고 신뢰할 수 있음','강한 자신감'], weaknesses:['자만심이 강할 수 있음','칭찬을 과도하게 원함','고집스럽고 권위적','질투심','드라마틱한 경향'], compat:['양자리','사수자리','쌍둥이자리','천칭자리'], challenge:['황소자리','전갈자리'], fortune:'태양의 강렬한 에너지가 창의력과 자신감을 높입니다.', house7:'물병자리' },
+  virgo:        { ko:'처녀자리', sym:'♍', el:'earth', mo:'mutable',  ruler:'수성',  color:'#22C55E', desc:'봉사정신이 있는 완벽주의자', personality:'수성이 지배하는 처녀자리는 세심한 분석가입니다. 완벽을 추구하며 디테일에 강합니다. 봉사와 도움을 통해 기쁨을 찾으며 건강과 생활 방식에 깊은 관심을 가집니다.', love:'신중하게 상대를 파악한 후 깊이 헌신합니다. 현실적인 관계에서 안정감을 찾습니다.', strengths:['세심하고 분석적','실용적이고 효율적','강한 책임감','봉사 정신','건강과 건전함 중시'], weaknesses:['완벽주의로 인한 스트레스','과도한 비판','걱정이 많음','융통성 부족','결정이 느림'], compat:['황소자리','염소자리','게자리','전갈자리'], challenge:['쌍둥이자리','사수자리'], fortune:'수성의 분석적 에너지가 문제 해결 능력을 극대화합니다.', house7:'물고기자리' },
+  libra:        { ko:'천칭자리', sym:'♎', el:'air',   mo:'cardinal', ruler:'금성',  color:'#EC4899', desc:'부드럽고 우아한 평화주의자', personality:'금성이 지배하는 천칭자리는 아름다움과 조화를 사랑합니다. 언제나 균형을 추구하며 공정하게 보려 합니다. 뛰어난 미적 감각과 사교적인 성격으로 어디서든 환영받습니다.', love:'균형잡힌 이상적인 관계를 추구합니다. 로맨틱한 환경을 즐기며 동등한 파트너십을 원합니다.', strengths:['뛰어난 미적 감각','공정하고 균형잡힌 판단','사교적이고 매력적','협력적 외교력','조화 추구'], weaknesses:['결정을 내리기 어려움','갈등 회피 경향','타인에게 지나친 의존','우유부단함','표면적 관계에 머묾'], compat:['쌍둥이자리','물병자리','사자자리','사수자리'], challenge:['게자리','염소자리'], fortune:'금성의 조화로운 에너지가 관계와 창의성을 꽃피웁니다.', house7:'양자리' },
+  scorpio:      { ko:'전갈자리', sym:'♏', el:'water', mo:'fixed',    ruler:'명왕성',color:'#8B5CF6', desc:'통찰력 있는 비밀주의자', personality:'명왕성이 지배하는 전갈자리는 가장 신비롭고 강렬한 별자리입니다. 표면 아래의 진실을 꿰뚫어 보는 통찰력을 가졌으며, 한번 결심하면 절대 포기하지 않는 강한 의지를 가집니다.', love:'깊고 강렬한 영혼의 연결을 추구합니다. 완전한 신뢰와 헌신을 기반으로 한 관계를 원합니다.', strengths:['강렬한 통찰력','불굴의 의지력','변화와 재생 능력','신뢰할 수 있는 충성심','강한 직관력'], weaknesses:['의심하고 질투하는 경향','복수심','지나치게 비밀스러움','집착하는 경향','극단적 성향'], compat:['게자리','물고기자리','황소자리','처녀자리'], challenge:['사자자리','물병자리'], fortune:'명왕성의 변혁적 에너지가 깊은 내면의 변화를 이끕니다.', house7:'황소자리' },
+  sagittarius:  { ko:'사수자리', sym:'♐', el:'fire',  mo:'mutable',  ruler:'목성',  color:'#F97316', desc:'철학적이고 낙천적인 방랑자', personality:'목성이 지배하는 사수자리는 자유와 모험을 사랑합니다. 철학적 사고와 낙천적 세계관으로 인생을 여행으로 바라봅니다. 지식과 지혜를 추구하며 다양한 문화에 열린 마음을 가집니다.', love:'자유롭고 모험적인 사랑을 원합니다. 서로의 독립성을 존중하며 함께 세상을 탐험할 파트너를 찾습니다.', strengths:['낙천적이고 열정적','강한 모험심','철학적이고 지혜로움','솔직하고 직접적','다양한 문화에 개방적'], weaknesses:['무책임할 수 있음','과도하게 직접적이어 상처 줌','집중력 부족','약속 지키기 어려움','과장하는 경향'], compat:['양자리','사자자리','천칭자리','물병자리'], challenge:['처녀자리','물고기자리'], fortune:'목성의 확장하는 에너지가 행운과 풍요를 가져옵니다.', house7:'쌍둥이자리' },
+  capricorn:    { ko:'염소자리', sym:'♑', el:'earth', mo:'cardinal', ruler:'토성',  color:'#94A3B8', desc:'야망과 집념의 조직가', personality:'토성이 지배하는 염소자리는 가장 야망 있고 근면한 별자리입니다. 현실적인 시각으로 장기적인 목표를 세우고 꾸준히 실현합니다. 나이가 들수록 더욱 여유롭고 지혜로워지는 역방향 성장의 별자리입니다.', love:'안정적이고 책임감 있는 파트너를 원합니다. 느리지만 진지하게 접근하며 한번 선택하면 끝까지 헌신합니다.', strengths:['강한 책임감과 신뢰성','목표를 향한 끈기','현실적이고 실용적','탁월한 자기 절제력','인내심'], weaknesses:['지나치게 보수적','워커홀릭 성향','냉정하고 감정 표현 부족','비관적 경향','융통성 부족'], compat:['황소자리','처녀자리','전갈자리','물고기자리'], challenge:['양자리','천칭자리'], fortune:'토성의 규율적인 에너지가 목표 달성을 도웁니다.', house7:'게자리' },
+  aquarius:     { ko:'물병자리', sym:'♒', el:'air',   mo:'fixed',    ruler:'천왕성',color:'#06B6D4', desc:'독창적인 개인주의자', personality:'천왕성이 지배하는 물병자리는 미래를 향해 나아가는 혁신가입니다. 독창적인 아이디어와 인도주의적 가치관으로 세상을 변화시키려 합니다. 개인의 독립성을 중요시하며 사회 통념에 얽매이지 않습니다.', love:'자유롭고 독립적인 관계를 원합니다. 지적으로 통하는 친구 같은 관계에서 사랑을 키웁니다.', strengths:['독창적이고 혁신적','인도주의적 사고','독립적인 자유 정신','지적이고 분석적','미래 지향적'], weaknesses:['감정적으로 거리를 둠','반항적 경향','고집스럽고 완고함','현실과 유리될 수 있음','예측 불가능함'], compat:['쌍둥이자리','천칭자리','양자리','사수자리'], challenge:['황소자리','전갈자리'], fortune:'천왕성의 혁신적 에너지가 창의적 돌파구를 만들어냅니다.', house7:'사자자리' },
+  pisces:       { ko:'물고기자리', sym:'♓', el:'water', mo:'mutable',  ruler:'해왕성',color:'#7C3AED', desc:'동정심 많은 신비가', personality:'해왕성이 지배하는 물고기자리는 황도대의 마지막이자 가장 영적인 별자리입니다. 깊은 공감 능력과 창의성으로 예술과 영성 분야에서 빛납니다. 현실과 꿈의 경계를 넘나드는 풍부한 상상력을 가집니다.', love:'깊고 영적인 연결을 추구합니다. 꿈 같은 로맨스를 원하며 조건 없이 사랑하는 헌신적 파트너입니다.', strengths:['깊은 공감 능력','풍부한 상상력과 창의성','영적 감수성','자기희생적 사랑','강한 적응력'], weaknesses:['현실 감각 부족','도피적 경향','과도한 의존성','경계선 설정 어려움','쉽게 상처받음'], compat:['게자리','전갈자리','황소자리','염소자리'], challenge:['쌍둥이자리','사수자리'], fortune:'해왕성의 신비로운 에너지가 직관과 창의성을 강화합니다.', house7:'처녀자리' }
+};
+
+var EL = { fire:{ko:'불',icon:'🔥',color:'#EF4444',desc:'열정적, 직관적, 창의적'}, earth:{ko:'흙',icon:'🌍',color:'#84CC16',desc:'현실적, 안정적, 인내심'}, air:{ko:'공기',icon:'💨',color:'#60A5FA',desc:'지적, 소통적, 객관적'}, water:{ko:'물',icon:'💧',color:'#818CF8',desc:'감성적, 직감적, 공감'} };
+var MO = { cardinal:{ko:'추진자 (Cardinal)',icon:'⚡',desc:'새로운 것을 시작하고 행동 개시'}, fixed:{ko:'조직자 (Fixed)',icon:'🔒',desc:'안정적으로 유지하며 끈기 있게 추진'}, mutable:{ko:'순발력 (Mutable)',icon:'🌊',desc:'유연하게 변화하고 빠르게 적응'} };
+var PI = { sun:'☀️', moon:'🌙', mercury:'☿', venus:'♀', mars:'♂', jupiter:'♃', saturn:'♄', asc:'↑' };
+var PC = { sun:'#FCD34D', moon:'#E2E8F0', mercury:'#A78BFA', venus:'#F9A8D4', mars:'#EF4444', jupiter:'#FB923C', saturn:'#94A3B8', asc:'#34D399' };
+var HOUSES = [
+  {n:1,theme:'자아와 외모',   desc:'첫인상, 자아 정체성'},
+  {n:2,theme:'재물과 가치관', desc:'재정, 소유물, 가치'},
+  {n:3,theme:'소통과 학습',   desc:'소통, 형제, 단기여행'},
+  {n:4,theme:'가정과 뿌리',   desc:'가정, 모성, 안식처'},
+  {n:5,theme:'창의와 사랑',   desc:'창의, 로맨스, 자녀'},
+  {n:6,theme:'건강과 서비스', desc:'업무, 건강, 봉사'},
+  {n:7,theme:'파트너십',      desc:'결혼, 파트너, 계약'},
+  {n:8,theme:'변환과 재생',   desc:'변화, 공유자원, 심리'},
+  {n:9,theme:'철학과 여행',   desc:'교육, 여행, 철학'},
+  {n:10,theme:'경력과 명성',  desc:'직업, 사회적 지위'},
+  {n:11,theme:'우정과 이상',  desc:'친구, 이상, 혁신'},
+  {n:12,theme:'영성과 비밀',  desc:'카르마, 영성, 봉사'}
+];
+
+/* ─── SVG CHART ─── */
+function drawChart(svgEl, planets, ascLon) {
+  svgEl.innerHTML = '';
+  var NS = 'http://www.w3.org/2000/svg';
+  var cx = 185, cy = 185;
+  var Ro = 165, Rs = 143, Rh = 118, Rp = 88, Rc = 26;
+
+  function mk(tag, attrs) {
+    var e = document.createElementNS(NS, tag);
+    Object.keys(attrs).forEach(function(k){ e.setAttribute(k, attrs[k]); });
+    return e;
+  }
+  function mtxt(x, y, str, attrs) {
+    var e = document.createElementNS(NS, 'text');
+    e.setAttribute('x', x); e.setAttribute('y', y);
+    Object.keys(attrs).forEach(function(k){ e.setAttribute(k, attrs[k]); });
+    e.textContent = str;
+    return e;
+  }
+
+  /* sector using polygon (avoids arc direction issues) */
+  function sectorPath(cx, cy, r, aDeg, bDeg) {
+    var pts = [cx + ' ' + cy];
+    var steps = 10;
+    for (var i = 0; i <= steps; i++) {
+      var angle = (aDeg + (bDeg - aDeg) * i / steps) * D2R;
+      var x = cx + r * Math.cos(angle);
+      var y = cy - r * Math.sin(angle);
+      pts.push(x + ' ' + y);
+    }
+    return 'M ' + pts.join(' L ') + ' Z';
+  }
+
+  /* defs */
+  var defs = mk('defs', {});
+  var filt = mk('filter', {id:'gw', x:'-30%', y:'-30%', width:'160%', height:'160%'});
+  var feB  = mk('feGaussianBlur', {stdDeviation:'3', result:'blur'});
+  feB.setAttribute('in', 'SourceGraphic');
+  var feM  = mk('feMerge', {});
+  var mn1  = mk('feMergeNode', {}); mn1.setAttribute('in','blur');
+  var mn2  = mk('feMergeNode', {}); mn2.setAttribute('in','SourceGraphic');
+  feM.appendChild(mn1); feM.appendChild(mn2);
+  filt.appendChild(feB); filt.appendChild(feM);
+  defs.appendChild(filt);
+
+  var cg = mk('radialGradient', {id:'cg', cx:'50%', cy:'50%', r:'50%'});
+  var cs1 = mk('stop', {offset:'0%', 'stop-color':'#8B5CF6', 'stop-opacity':'0.5'});
+  var cs2 = mk('stop', {offset:'100%', 'stop-color':'#8B5CF6', 'stop-opacity':'0'});
+  cg.appendChild(cs1); cg.appendChild(cs2);
+  defs.appendChild(cg);
+  svgEl.appendChild(defs);
+
+  /* background */
+  svgEl.appendChild(mk('circle', {cx:cx, cy:cy, r:Ro, fill:'#060620', stroke:'rgba(139,92,246,0.35)', 'stroke-width':'1'}));
+
+  var ELC = { fire:'rgba(239,68,68,0.16)', earth:'rgba(132,204,22,0.12)', air:'rgba(96,165,250,0.14)', water:'rgba(129,140,248,0.16)' };
+
+  /* 12 sign sectors */
+  for (var i = 0; i < 12; i++) {
+    var sk  = SKEYS[i];
+    var sig = SD[sk];
+    /* Chart: ASC is at the LEFT (180° in screen math coords) */
+    /* For sector i: starts at ascLon + i*30 in ecliptic, maps to screen */
+    var startEcl = ascLon + i * 30;   /* ecliptic start longitude */
+    var aDeg = 180 - startEcl;        /* screen angle start */
+    var bDeg = 180 - (startEcl + 30); /* screen angle end */
+    var path = sectorPath(cx, cy, Ro, aDeg, bDeg);
+    svgEl.appendChild(mk('path', {d:path, fill:ELC[sig.el], stroke:'rgba(139,92,246,0.2)', 'stroke-width':'0.6'}));
+
+    /* sign symbol */
+    var midDeg = 180 - (startEcl + 15);
+    var smr = (Ro + Rs) / 2;
+    var sx = cx + smr * Math.cos(midDeg * D2R);
+    var sy = cy - smr * Math.sin(midDeg * D2R);
+    svgEl.appendChild(mtxt(sx, sy, sig.sym, {'text-anchor':'middle','dominant-baseline':'middle','font-size':'12','fill':sig.color,'filter':'url(#gw)'}));
+  }
+
+  /* house ring */
+  svgEl.appendChild(mk('circle', {cx:cx, cy:cy, r:Rh, fill:'none', stroke:'rgba(139,92,246,0.4)', 'stroke-width':'0.8'}));
+
+  /* house lines & numbers */
+  for (var h = 0; h < 12; h++) {
+    var hEcl = ascLon + h * 30;
+    var hA = (180 - hEcl) * D2R;
+    var hx1 = cx + Rh * Math.cos(hA), hy1 = cy - Rh * Math.sin(hA);
+    var hx2 = cx + Ro * Math.cos(hA), hy2 = cy - Ro * Math.sin(hA);
+    svgEl.appendChild(mk('line', {x1:hx1,y1:hy1,x2:hx2,y2:hy2, stroke:'rgba(139,92,246,0.3)', 'stroke-width':'0.7'}));
+
+    var nmEcl = ascLon + h * 30 + 15;
+    var nmA = (180 - nmEcl) * D2R;
+    var nr = (Rh + Rp) / 2;
+    var nx = cx + nr * Math.cos(nmA), ny = cy - nr * Math.sin(nmA);
+    svgEl.appendChild(mtxt(nx, ny, String(h + 1), {'text-anchor':'middle','dominant-baseline':'middle','font-size':'9','fill':'rgba(139,92,246,0.55)'}));
+  }
+
+  /* planet orbit ring */
+  svgEl.appendChild(mk('circle', {cx:cx, cy:cy, r:Rp, fill:'none', stroke:'rgba(139,92,246,0.12)', 'stroke-width':'0.5', 'stroke-dasharray':'3,4'}));
+
+  /* center */
+  svgEl.appendChild(mk('circle', {cx:cx, cy:cy, r:Rc, fill:'url(#cg)', stroke:'rgba(139,92,246,0.5)', 'stroke-width':'1'}));
+  svgEl.appendChild(mtxt(cx, cy, '✦', {'text-anchor':'middle','dominant-baseline':'middle','font-size':'14','fill':'#a78bfa'}));
+
+  /* planets */
+  var pList = [
+    {key:'sun',     lon:planets.sun.lon},
+    {key:'moon',    lon:planets.moon.lon},
+    {key:'mercury', lon:planets.mercury.lon},
+    {key:'venus',   lon:planets.venus.lon},
+    {key:'mars',    lon:planets.mars.lon},
+    {key:'jupiter', lon:planets.jupiter.lon},
+    {key:'saturn',  lon:planets.saturn.lon},
+    {key:'asc',     lon:ascLon}
+  ];
+  var used = [];
+  pList.forEach(function(p) {
+    var screenDeg = 180 - (p.lon - ascLon);
+    /* avoid overlap */
+    var adj = screenDeg;
+    var tries = 0;
+    while (tries < 72) {
+      var ok = true;
+      for (var ui = 0; ui < used.length; ui++) {
+        var diff = Math.abs(((adj - used[ui] + 540) % 360) - 180);
+        if (diff < 9) { ok = false; break; }
+      }
+      if (ok) break;
+      adj += 5; tries++;
+    }
+    used.push(adj);
+
+    var a = adj * D2R;
+    var px = cx + Rp * Math.cos(a);
+    var py = cy - Rp * Math.sin(a);
+    var col = PC[p.key];
+    var ic  = PI[p.key];
+
+    svgEl.appendChild(mk('circle', {cx:px, cy:py, r:11, fill:col+'22', stroke:col, 'stroke-width':'1.4'}));
+    svgEl.appendChild(mtxt(px, py, ic, {'text-anchor':'middle','dominant-baseline':'middle','font-size':'10','fill':col}));
+
+    /* connector line */
+    var ox = cx + Ro * Math.cos(a), oy = cy - Ro * Math.sin(a);
+    var lx = cx + (Rp + 13) * Math.cos(a), ly = cy - (Rp + 13) * Math.sin(a);
+    svgEl.appendChild(mk('line', {x1:lx,y1:ly,x2:ox,y2:oy, stroke:col+'28','stroke-width':'0.7','stroke-dasharray':'2,3'}));
+  });
+
+  /* ASC marker */
+  var ascA = 180 * D2R; /* ASC is always at 180° in screen coords */
+  var ax = cx + Ro * Math.cos(ascA), ay = cy - Ro * Math.sin(ascA);
+  svgEl.appendChild(mk('circle', {cx:ax-8, cy:ay, r:5, fill:'#34D39930', stroke:'#34D399', 'stroke-width':'1.2'}));
+  svgEl.appendChild(mtxt(ax-22, ay-12, 'AC', {'text-anchor':'middle','font-size':'8','fill':'#34D399','font-weight':'bold'}));
+}
+
+/* ─── ASPECT HELPERS ─── */
+function getAspect(k1, k2) {
+  var i1 = SKEYS.indexOf(k1), i2 = SKEYS.indexOf(k2);
+  if (i1 < 0 || i2 < 0) return 'neutral';
+  var d = Math.min(Math.abs(i1-i2), 12-Math.abs(i1-i2));
+  if (d===0) return 'conj';
+  if (d===4||d===8) return 'trine';
+  if (d===2||d===10) return 'sext';
+  if (d===3||d===9) return 'square';
+  if (d===6) return 'opp';
+  return 'neutral';
+}
+function stars(k1, k2) {
+  return {conj:'★★★★★',trine:'★★★★☆',sext:'★★★★☆',neutral:'★★★☆☆',square:'★★☆☆☆',opp:'★★☆☆☆'}[getAspect(k1,k2)]||'★★★☆☆';
+}
+function fMsg(table, key) { return table[key] || table['neutral']; }
+
+var CAREER_MSG = {conj:'목성과 합! 직업적 확장의 황금기, 새로운 기회를 적극 잡으세요.',trine:'목성의 조화로운 에너지로 경력 발전과 재정적 성과가 기대됩니다.',sext:'협력과 네트워킹을 통해 직업적 성장의 기회가 열립니다.',square:'성장 압력이 있지만 극복 시 더 큰 성과가 뒤따릅니다.',opp:'현실적 목표 설정이 중요한 시기입니다.',neutral:'꾸준한 노력이 점진적인 성과로 이어지는 안정적 시기입니다.'};
+var LOVE_MSG   = {conj:'금성의 영향으로 매력 극대화! 새로운 만남에 열린 마음을 가지세요.',trine:'사랑과 조화의 에너지가 넘칩니다. 기존 관계가 더욱 깊어집니다.',sext:'좋은 인연이 자연스럽게 찾아올 수 있습니다.',square:'관계에서 갈등이 있지만 이를 통해 성장합니다.',opp:'파트너와의 균형을 찾는 것이 중요합니다.',neutral:'현재의 관계를 소중히 가꾸는 것이 중요합니다.'};
+var HEALTH_MSG = {conj:'화성 에너지로 활력 충만! 새로운 운동 루틴을 시작하기 최적입니다.',trine:'신체적 에너지가 넘치는 건강한 시기입니다.',sext:'활동적인 생활이 건강을 향상시킵니다.',square:'과로를 조심하세요. 충분한 휴식이 필요합니다.',opp:'에너지 관리와 균형 잡힌 생활을 유지하세요.',neutral:'규칙적인 생활과 적당한 운동으로 건강을 유지하세요.'};
+var MIND_MSG   = {conj:'새로운 사이클의 시작! 목표를 재설정하기 좋은 때입니다.',trine:'정신적 명확함과 창의적 영감이 풍부합니다.',sext:'지적 성장의 기회가 주어집니다.',square:'내면의 갈등을 통해 성장합니다.',opp:'외부의 관점이 새로운 인사이트를 줍니다.',neutral:'안정적인 정신 상태로 꾸준히 발전하는 시기입니다.'};
+
+function getMonthDesc(signEl, off) {
+  var all = {
+    fire: ['새로운 프로젝트 시작! 넘치는 열정을 발산하세요.','현재 진행 중인 일에 집중하세요. 행동력을 유지!','에너지를 충전하며 다음 도약을 준비하세요.'],
+    earth:['재정적 기회가 옵니다. 현실적인 계획 실행!','안정적 성과가 쌓이는 시기. 꾸준함이 열쇠.','인내하며 기다리세요. 결실이 다가옵니다.'],
+    air:  ['소통과 아이디어 폭발! 네트워킹 최적.','학습과 정보 수집에 집중하세요.','내면을 정리하며 새로운 방향을 탐색하세요.'],
+    water:['직관이 강해집니다. 창의적 영감을 활용!','소중한 관계를 돌보세요. 감정적 유대 강화.','조용히 내면을 치유하고 충전하는 시기.']
+  };
+  return (all[signEl] || all.fire)[off] || '';
+}
+
+var FORTUNE_EL = {
+  fire:  '불의 에너지가 당신의 내면에서 활활 타오르고 있습니다. 행동력과 열정이 극대화되는 시기로, 새로운 도전을 시작하기에 최적입니다. 주저하지 말고 마음이 이끄는 방향으로 움직이세요.',
+  earth: '대지의 에너지가 안정감을 가져다줍니다. 현실적인 계획을 세우고 차근차근 실행할 때 가장 좋은 결과를 얻을 수 있는 시기입니다. 급하게 서두르지 마세요.',
+  air:   '바람의 에너지가 지적 호기심을 자극합니다. 새로운 아이디어, 소통, 네트워킹이 빛나는 시기입니다. 사람들과의 만남에서 행운이 찾아올 수 있습니다.',
+  water: '물의 에너지가 직관과 감수성을 높여줍니다. 내면의 목소리에 귀를 기울이세요. 창의적 영감이 풍부해지며, 소중한 관계에서 깊은 유대감을 형성할 수 있습니다.'
+};
+var CAREER_ADVICE = {conj:'지금이 바로 새 프로젝트를 시작할 골든 타임! 적극적으로 기회를 잡으세요.',trine:'실력이 자연스럽게 인정받는 시기. 자신감을 갖고 한 단계 도약하세요.',sext:'주변 동료와 협력이 시너지를 만듭니다. 네트워크를 넓혀보세요.',square:'잠시 멈추고 방향을 점검하세요. 전략적 수정이 큰 차이를 만듭니다.',opp:'장기적 관점으로 목표를 재설정할 때입니다. 무리하지 마세요.',neutral:'일관성 있게 노력을 이어가세요. 씨앗을 뿌리는 시기입니다.'};
+var LOVE_ADVICE = {conj:'적극적으로 감정을 표현하세요. 마음을 여는 만큼 사랑이 들어옵니다.',trine:'상대에게 진심 어린 감사를 전해보세요. 작은 행동이 관계를 빛냅니다.',sext:'새로운 모임이나 활동에 참여해보세요. 특별한 인연을 만날 수 있습니다.',square:'대화를 피하지 마세요. 솔직한 소통이 오해를 풀어줍니다.',opp:'상대방의 입장에서 생각하는 연습을 해보세요.',neutral:'현재의 관계에 감사하며, 소소한 일상을 함께 즐겨보세요.'};
+var HEALTH_ADVICE = {conj:'새로운 스포츠나 운동에 도전해보세요! 몸이 활력을 원합니다.',trine:'꾸준한 루틴을 유지하세요. 몸과 마음이 최적의 상태입니다.',sext:'가벼운 산책이나 스트레칭부터 시작해보세요.',square:'수면 패턴을 점검하세요. 충분한 수면이 모든 것의 기초입니다.',opp:'균형 잡힌 식단과 규칙적인 생활이 최우선입니다.',neutral:'현재의 건강 습관을 유지하되, 물을 더 많이 마시세요.'};
+var MIND_ADVICE = {conj:'일기 쓰기, 명상, 새로운 공부를 시작하기 좋은 때입니다.',trine:'배움에 투자하세요. 책, 강의, 새로운 기술 습득이 빛을 발합니다.',sext:'관심 있었던 분야를 탐색해보세요. 의외의 발견이 있을 수 있습니다.',square:'완벽주의를 내려놓고, 작은 성취에 집중하세요.',opp:'다른 관점에서 바라보는 연습을 해보세요. 시야가 넓어집니다.',neutral:'매일 10분의 명상이나 자기 성찰 시간을 가져보세요.'};
+
+var COMPAT_REASONS = {
+  fire_fire: '같은 불 원소끼리 열정과 행동력을 공유합니다. 서로의 에너지를 배가시키며, 함께하면 어떤 도전이든 흥미롭게 만들어요.',
+  fire_air:  '불은 공기를 만나면 더 크게 타오릅니다. 공기 별자리의 아이디어와 소통력이 불 별자리의 행동력에 날개를 달아주는 환상의 조합입니다.',
+  earth_earth:'같은 대지 위에 서있어 가치관이 통합니다. 안정적이고 현실적인 목표를 함께 달성하며, 서로에게 든든한 버팀목이 됩니다.',
+  earth_water:'흙은 물을 만나면 비옥해집니다. 물 별자리의 감성이 흙 별자리의 현실감과 만나 깊고 풍요로운 관계를 형성합니다.',
+  air_air:   '지적 교감이 폭발합니다! 끝없는 대화와 아이디어 교환으로 서로를 자극하며 함께 성장하는 파트너입니다.',
+  water_water:'감정의 깊이를 공유합니다. 말하지 않아도 서로의 기분을 알아채는 직관적 연결로, 영혼이 통하는 관계입니다.'
+};
+var CHALLENGE_REASONS = {
+  fire_water:'불과 물은 서로를 꺼뜨리거나 끓게 만듭니다. 불 별자리의 직접적 에너지가 물 별자리에게 부담이 되고, 물의 감정적 깊이가 불에게 답답하게 느껴질 수 있어요.',
+  fire_earth:'불은 빠르게 타오르지만 흙은 천천히 움직입니다. 속도 차이에서 오는 갈등이 있을 수 있으나, 극복하면 서로를 보완하는 관계가 됩니다.',
+  air_water: '공기의 논리적 사고와 물의 감정적 반응이 충돌합니다. 공기가 물의 감정을 가볍게 여기거나, 물이 공기의 논리를 차갑다고 느낄 수 있어요.',
+  air_earth: '공기는 변화를 추구하지만 흙은 안정을 원합니다. 서로의 리듬을 이해하려면 노력이 필요하지만, 배울 점이 많은 관계입니다.'
+};
+
+function getCompatReason(myEl, theirSign) {
+  var theirEl = '';
+  var sKeys = Object.keys(SD);
+  for (var i = 0; i < sKeys.length; i++) {
+    if (SD[sKeys[i]].ko === theirSign) { theirEl = SD[sKeys[i]].el; break; }
+  }
+  if (!theirEl) return '두 별자리의 에너지가 조화를 이루어 자연스러운 유대감을 형성합니다.';
+  var key1 = myEl + '_' + theirEl;
+  var key2 = theirEl + '_' + myEl;
+  return COMPAT_REASONS[key1] || COMPAT_REASONS[key2] || '비슷한 파장으로 자연스럽게 통하는 관계입니다.';
+}
+function getChallengeReason(myEl, theirSign) {
+  var theirEl = '';
+  var sKeys = Object.keys(SD);
+  for (var i = 0; i < sKeys.length; i++) {
+    if (SD[sKeys[i]].ko === theirSign) { theirEl = SD[sKeys[i]].el; break; }
+  }
+  if (!theirEl) return '다른 에너지를 가져 처음엔 불편할 수 있지만, 서로에게 성장을 선물하는 관계입니다.';
+  var key1 = myEl + '_' + theirEl;
+  var key2 = theirEl + '_' + myEl;
+  return CHALLENGE_REASONS[key1] || CHALLENGE_REASONS[key2] || '다른 에너지가 충돌하지만, 이 차이가 서로에게 부족한 부분을 채워줍니다.';
+}
+function getNeedPerson(sun) {
+  var NEED = {
+    fire: '당신에게는 <strong>냉정하게 방향을 잡아주는 현실적인 조언자</strong>가 필요합니다. 불꽃같은 열정에 전략적 사고를 더해줄 수 있는 흙(Earth) 원소의 사람이 이상적입니다. ' + sun.ko + '의 추진력과 흙 별자리의 인내심이 만나면 꿈을 현실로 바꿀 수 있습니다. 특히 <strong>' + sun.challenge[0] + '</strong> 사람에게서 인내와 절제를 배울 수 있어요.',
+    earth:'당신에게는 <strong>새로운 가능성을 보여주는 자유로운 영혼</strong>이 필요합니다. 안정을 추구하는 흙 에너지에 신선한 바람을 불어넣어줄 물(Water) 또는 공기(Air) 원소의 사람이 좋습니다. 고정된 틀에서 벗어나 새로운 시각을 열어줄 수 있어요. 특히 <strong>' + sun.challenge[0] + '</strong> 사람이 당신의 세계를 확장시켜 줄 수 있습니다.',
+    air:  '당신에게는 <strong>감정의 깊이를 가르쳐주는 따뜻한 사람</strong>이 필요합니다. 머리로 이해하는 것을 넘어 가슴으로 느끼는 것의 소중함을 알려줄 물(Water) 원소의 사람이 이상적입니다. 지적 소통을 넘어선 영혼의 교감을 경험하게 해줄 수 있어요. 특히 <strong>' + sun.challenge[0] + '</strong> 사람이 감정적 균형을 선물합니다.',
+    water:'당신에게는 <strong>감정을 행동으로 바꿔주는 용기 있는 리더</strong>가 필요합니다. 풍부한 감수성을 현실적 성과로 연결해줄 불(Fire) 또는 흙(Earth) 원소의 사람이 좋습니다. 꿈을 꾸는 것에 그치지 않고 실현하도록 동기를 부여해줄 수 있어요. 특히 <strong>' + sun.challenge[0] + '</strong> 사람이 행동력을 길러줍니다.'
+  };
+  return NEED[sun.el] || NEED.fire;
+}
+
+function getNeedPerson(sun) {
+  var NEED = {
+    fire: '당신에게는 <strong>냉정하게 방향을 잡아주는 현실적인 조언자</strong>가 필요합니다. 불꽃같은 열정에 전략적 사고를 더해줄 수 있는 흙(Earth) 원소의 사람이 이상적입니다. ' + sun.ko + '의 추진력과 흙 별자리의 인내심이 만나면 꿈을 현실로 바꿀 수 있습니다. 특히 <strong>' + sun.challenge[0] + '</strong> 사람에게서 인내와 절제를 배울 수 있어요.',
+    earth:'당신에게는 <strong>새로운 가능성을 보여주는 자유로운 영혼</strong>이 필요합니다. 안정을 추구하는 흙 에너지에 신선한 바람을 불어넣어줄 물(Water) 또는 공기(Air) 원소의 사람이 좋습니다. 고정된 틀에서 벗어나 새로운 시각을 열어줄 수 있어요. 특히 <strong>' + sun.challenge[0] + '</strong> 사람이 당신의 세계를 확장시켜 줄 수 있습니다.',
+    air:  '당신에게는 <strong>감정의 깊이를 가르쳐주는 따뜻한 사람</strong>이 필요합니다. 머리로 이해하는 것을 넘어 가슴으로 느끼는 것의 소중함을 알려줄 물(Water) 원소의 사람이 이상적입니다. 지적 소통을 넘어선 영혼의 교감을 경험하게 해줄 수 있어요. 특히 <strong>' + sun.challenge[0] + '</strong> 사람이 감정적 균형을 선물합니다.',
+    water:'당신에게는 <strong>감정을 행동으로 바꿔주는 용기 있는 리더</strong>가 필요합니다. 풍부한 감수성을 현실적 성과로 연결해줄 불(Fire) 또는 흙(Earth) 원소의 사람이 좋습니다. 꿈을 꾸는 것에 그치지 않고 실현하도록 동기를 부여해줄 수 있어요. 특히 <strong>' + sun.challenge[0] + '</strong> 사람이 행동력을 길러줍니다.'
+  };
+  return NEED[sun.el] || NEED.fire;
+}
+
+function groupSignsByReason(signs, reasonFunc, el) {
+  var groups = {};
+  signs.forEach(function(s) {
+    var r = reasonFunc(el, s);
+    if (!groups[r]) groups[r] = [];
+    groups[r].push(s);
+  });
+  return Object.keys(groups).map(function(r) {
+    return { signs: groups[r], reason: r };
+  });
+}
+
+/* ─── CURRENT DATA ─── */
+var G = null;
+
+/* ─── MAIN GENERATE ─── */
+function generate(data) {
+  var sun  = SD[data.planets.sun.key];
+  var moon = SD[data.planets.moon.key];
+  var merc = SD[data.planets.mercury.key];
+  var asc  = SD[data.planets.asc.key];
+  var now  = new Date();
+
+  /* Planet strip */
+  var pArr = [
+    {k:'sun',     lbl:'태양',  s:sun,  d:data.planets.sun.deg},
+    {k:'moon',    lbl:'달',    s:moon, d:data.planets.moon.deg},
+    {k:'mercury', lbl:'수성',  s:merc, d:data.planets.mercury.deg},
+    {k:'asc',     lbl:'상승궁',s:asc,  d:data.planets.asc.deg}
+  ];
+  document.getElementById('pStrip').innerHTML = pArr.map(function(p) {
+    return '<div class="p-card">' +
+      '<div class="p-icon">' + PI[p.k] + '</div>' +
+      '<div class="p-label">' + p.lbl + '</div>' +
+      '<div class="p-sign" style="color:' + p.s.color + '">' + p.s.ko + ' ' + p.s.sym + '</div>' +
+      '<div class="p-deg">' + p.d + '°</div>' +
+      '</div>';
+  }).join('');
+
+  /* Personality */
+  document.getElementById('dPersonality').innerHTML =
+    '<p style="margin-bottom:14px;line-height:1.9;">' + sun.personality + '</p>' +
+    '<p style="margin-bottom:12px;font-size:.85rem;line-height:1.8;">' +
+      '🌙 <strong style="color:#e2e8f0">달 (' + moon.ko + ')</strong>: ' + moon.desc + ' 성향<br>' +
+      '☿ <strong style="color:#e2e8f0">수성 (' + merc.ko + ')</strong>: ' + merc.ko + ' 방식의 소통<br>' +
+      '↑ <strong style="color:#e2e8f0">상승궁 (' + asc.ko + ')</strong>: 타인에게 ' + asc.desc + '로 보임' +
+    '</p>' +
+    '<div class="traits">' +
+      '<div class="t-box pos"><h4>✦ 강점</h4><ul>' +
+        sun.strengths.map(function(s){return '<li>'+s+'</li>';}).join('') +
+      '</ul></div>' +
+      '<div class="t-box neg"><h4>◇ 성장 포인트</h4><ul>' +
+        sun.weaknesses.map(function(w){return '<li>'+w+'</li>';}).join('') +
+      '</ul></div>' +
+    '</div>';
+
+  /* Element */
+  document.getElementById('dElement').innerHTML =
+    '<div class="el-row">' +
+      '<div class="el-chip ' + sun.el + '">' + EL[sun.el].icon + ' ' + EL[sun.el].ko + ' 원소</div>' +
+      '<div class="el-chip air">' + MO[sun.mo].icon + ' ' + MO[sun.mo].ko + '</div>' +
+    '</div>' +
+    '<p style="font-size:.85rem;line-height:1.8;">' +
+      '<strong style="color:' + EL[sun.el].color + '">' + EL[sun.el].ko + ' 원소</strong>: ' + EL[sun.el].desc + '<br>' +
+      '<strong style="color:#a78bfa">' + MO[sun.mo].ko + '</strong>: ' + MO[sun.mo].desc + '<br><br>' +
+      '달 원소 <strong>' + EL[moon.el].ko + '</strong>와 상승궁 원소 <strong>' + EL[asc.el].ko + '</strong>가 결합되어 복합적 성격을 형성합니다.' +
+    '</p>';
+
+  /* Fortune — 트랜짓 제거, 내용 보강 */
+  var nowJD  = toJD(now.getFullYear(), now.getMonth()+1, now.getDate(), 12, 0, 9);
+  var tSun   = lonToSign(calcSun(nowJD));
+  var tJup   = lonToSign(calcJupiter(nowJD));
+  var tSat   = lonToSign(calcSaturn(nowJD));
+  var tMars  = lonToSign(calcMars(nowJD));
+  var tVenus = lonToSign(calcVenus(nowJD));
+
+  var curMonth = now.getMonth() + 1;
+  var curYear = now.getFullYear();
+
+  document.getElementById('dFortune').innerHTML =
+    '<div class="fortune-summary">' +
+      '<p>' + curYear + '년 ' + curMonth + '월, <strong>' + data.name + '</strong>님의 ' + sun.ko + ' ' + sun.sym + ' 에너지가 우주의 흐름과 만나는 시기입니다. ' +
+      FORTUNE_EL[sun.el] + '</p>' +
+    '</div>' +
+    '<div class="f-grid">' +
+      '<div class="f-item"><h4>💼 직업 &amp; 재정</h4><p>' + fMsg(CAREER_MSG, getAspect(sun.key, tJup.key)) + '</p><div class="advice">' + fMsg(CAREER_ADVICE, getAspect(sun.key, tJup.key)) + '</div><div class="stars">' + stars(sun.key, tJup.key) + '</div></div>' +
+      '<div class="f-item"><h4>💕 사랑 &amp; 관계</h4><p>' + fMsg(LOVE_MSG, getAspect(sun.key, tVenus.key)) + '</p><div class="advice">' + fMsg(LOVE_ADVICE, getAspect(sun.key, tVenus.key)) + '</div><div class="stars">' + stars(sun.key, tVenus.key) + '</div></div>' +
+      '<div class="f-item"><h4>🌿 건강 &amp; 에너지</h4><p>' + fMsg(HEALTH_MSG, getAspect(sun.key, tMars.key)) + '</p><div class="advice">' + fMsg(HEALTH_ADVICE, getAspect(sun.key, tMars.key)) + '</div><div class="stars">' + stars(sun.key, tMars.key) + '</div></div>' +
+      '<div class="f-item"><h4>🧠 정신 &amp; 성장</h4><p>' + fMsg(MIND_MSG, getAspect(sun.key, tSun.key)) + '</p><div class="advice">' + fMsg(MIND_ADVICE, getAspect(sun.key, tSun.key)) + '</div><div class="stars">' + stars(sun.key, tSun.key) + '</div></div>' +
+    '</div>';
+
+  /* Monthly */
+  var mHtml = '<div class="m-grid">';
+  for (var mi = 0; mi < 3; mi++) {
+    var md = new Date(now.getFullYear(), now.getMonth()+mi, 1);
+    var mr = ['🌟🌟🌟🌟🌟','🌟🌟🌟🌟','🌟🌟🌟'][mi];
+    mHtml += '<div class="m-card"><div class="mn">' + (md.getMonth()+1) + '월</div><div class="mr">' + mr + '</div><div class="md">' + getMonthDesc(sun.el, mi) + '</div></div>';
+  }
+  mHtml += '</div>';
+  document.getElementById('dMonthly').innerHTML = mHtml;
+
+  /* Relations — 궁합 이유 상세 + 나에게 필요한 사람 */
+  var compatGroups = groupSignsByReason(sun.compat, getCompatReason, sun.el);
+  var compatHtml = compatGroups.map(function(g) {
+    return '<div class="compat-card good"><h5>💚 ' + g.signs.join(', ') + '</h5><p>' + g.reason + '</p></div>';
+  }).join('');
+
+  var challengeGroups = groupSignsByReason(sun.challenge, getChallengeReason, sun.el);
+  var challengeHtml = challengeGroups.map(function(g) {
+    return '<div class="compat-card bad"><h5>⚡ ' + g.signs.join(', ') + '</h5><p>' + g.reason + '</p></div>';
+  }).join('');
+
+  document.getElementById('dRelation').innerHTML =
+    '<p style="margin-bottom:14px;font-size:.87rem;line-height:1.9;">' + sun.love + '</p>' +
+    '<p style="color:var(--purple-l);font-size:.78rem;margin-bottom:8px;letter-spacing:1px;">✦ 좋은 궁합 — 왜 잘 맞을까?</p>' +
+    '<div class="compat-detail">' + compatHtml + '</div>' +
+    '<p style="color:var(--purple-l);font-size:.78rem;margin:18px 0 8px;letter-spacing:1px;">◇ 성장이 필요한 궁합 — 왜 불편할까?</p>' +
+    '<div class="compat-detail">' + challengeHtml + '</div>' +
+    '<p style="font-size:.83rem;margin-top:16px;line-height:1.85;">상승궁 <strong>' + asc.ko + '</strong>로 처음 만나는 사람에게 ' + asc.desc + ' 인상을 줍니다. 7하우스는 <strong>' + sun.house7 + '</strong>에 있어 이 별자리와 깊은 인연이 형성됩니다.</p>' +
+    '<div class="need-box"><h4>🧭 나에게 필요한 사람</h4><p>' + getNeedPerson(sun) + '</p></div>';
+
+  /* Planet Meaning */
+  document.getElementById('pMeaning').innerHTML =
+    '<div class="pm-grid">' +
+      '<div class="pm-item">' +
+        '<div class="pm-top"><div class="pm-icon">☀️</div><div class="pm-info">' +
+          '<div class="pm-title" style="color:#FCD34D">태양 — ' + sun.ko + ' ' + sun.sym + '</div>' +
+          '<div class="pm-role">핵심 자아 · 삶의 목적 · 의식적 에너지</div>' +
+        '</div></div>' +
+        '<p class="pm-desc">태양은 당신이 <strong>어떤 사람인지</strong>를 가장 잘 보여주는 행성입니다. ' +
+        sun.ko + '에 위치하여 <strong>' + sun.desc + '</strong> 성향이 핵심 에너지입니다. ' +
+        '삶에서 무엇에 활력을 느끼고, 어떤 방향으로 성장하고 싶은지를 나타냅니다. ' +
+        '지배성인 <strong>' + sun.ruler + '</strong>의 영향을 강하게 받습니다.</p>' +
+      '</div>' +
+      '<div class="pm-item">' +
+        '<div class="pm-top"><div class="pm-icon">🌙</div><div class="pm-info">' +
+          '<div class="pm-title" style="color:#E2E8F0">달 — ' + moon.ko + ' ' + moon.sym + '</div>' +
+          '<div class="pm-role">감정 · 무의식 · 본능적 반응</div>' +
+        '</div></div>' +
+        '<p class="pm-desc">달은 당신의 <strong>감정적 내면세계</strong>와 무의식을 나타냅니다. ' +
+        moon.ko + '에 위치하여 <strong>' + moon.desc + '</strong> 방식으로 감정을 처리합니다. ' +
+        '편안함을 느끼는 환경, 어머니상, 무의식적인 습관 패턴에 영향을 줍니다. ' +
+        '태양(의식)과 달(무의식)의 조합이 진짜 내 모습을 만들어냅니다.</p>' +
+      '</div>' +
+      '<div class="pm-item">' +
+        '<div class="pm-top"><div class="pm-icon">☿</div><div class="pm-info">' +
+          '<div class="pm-title" style="color:#A78BFA">수성 — ' + merc.ko + ' ' + merc.sym + '</div>' +
+          '<div class="pm-role">사고방식 · 소통 · 학습 스타일</div>' +
+        '</div></div>' +
+        '<p class="pm-desc">수성은 <strong>어떻게 생각하고 말하고 배우는지</strong>를 보여줍니다. ' +
+        merc.ko + '에 위치하여 <strong>' + merc.desc + '</strong> 스타일로 정보를 처리합니다. ' +
+        '글쓰기·말하기·배우기·협상하는 방식 모두 수성의 영향입니다. ' +
+        '직업적 커뮤니케이션과 일상적 대화 패턴을 결정합니다.</p>' +
+      '</div>' +
+      '<div class="pm-item">' +
+        '<div class="pm-top"><div class="pm-icon">↑</div><div class="pm-info">' +
+          '<div class="pm-title" style="color:#34D399">상승궁 — ' + asc.ko + ' ' + asc.sym + '</div>' +
+          '<div class="pm-role">외적 이미지 · 첫인상 · 세상과 마주하는 방식</div>' +
+        '</div></div>' +
+        '<p class="pm-desc">상승궁(AC)은 <strong>세상을 향한 당신의 페르소나</strong>입니다. ' +
+        '태어난 순간 동쪽 지평선에 떠오른 별자리로, 타인에게는 <strong>' + asc.desc + '</strong> 인상을 줍니다. ' +
+        '실제 내면(태양)과 다를 수 있으며, 처음 만나는 사람이 느끼는 당신의 분위기입니다. ' +
+        '삶의 문을 여는 방식, 새로운 상황에 적응하는 스타일도 나타냅니다.</p>' +
+      '</div>' +
+    '</div>';
+
+  /* Houses — 행성 있는 하우스만 표시 */
+  var housePlanets = {};
+  ['sun','moon','mercury','venus','mars','jupiter','saturn'].forEach(function(pk) {
+    var hn = Math.floor(((data.planets[pk].lon - data.planets.asc.lon + 360) % 360) / 30) + 1;
+    if (!housePlanets[hn]) housePlanets[hn] = [];
+    housePlanets[hn].push(pk);
+  });
+
+  var occupiedNums = Object.keys(housePlanets).map(Number).sort(function(a,b){return a-b;});
+
+  var HOUSE_BASE_DESC = [
+    '1하우스는 <strong>자아와 외모</strong>를 담당합니다. 당신이 세상에 자신을 드러내는 방식, 육체적 외모, 첫인상을 결정합니다.',
+    '2하우스는 <strong>돈과 가치관</strong>의 영역입니다. 돈을 버는 능력, 소유물, 자존감, 내가 진정으로 소중히 여기는 것들을 나타냅니다.',
+    '3하우스는 <strong>소통과 학습</strong>의 공간입니다. 말하기·쓰기·단거리 이동·형제자매·일상적 호기심과 관련됩니다.',
+    '4하우스는 <strong>가정과 뿌리</strong>를 의미합니다. 어린 시절 환경, 부모(특히 어머니), 내면의 안식처, 삶의 기반을 나타냅니다.',
+    '5하우스는 <strong>창의성과 즐거움</strong>의 하우스입니다. 예술적 표현, 로맨스, 취미, 자녀, 놀이와 기쁨의 영역입니다.',
+    '6하우스는 <strong>일상과 건강</strong>을 담당합니다. 매일의 루틴, 직장 환경, 건강 관리 습관, 타인을 위한 봉사 방식을 보여줍니다.',
+    '7하우스는 <strong>파트너십</strong>의 하우스입니다. 결혼·연애 파트너, 비즈니스 파트너십, 중요한 1:1 관계의 특성을 나타냅니다.',
+    '8하우스는 <strong>변화와 재생</strong>의 영역입니다. 깊은 심리 변환, 공유 자원, 유산, 타인과의 깊은 연결을 담당합니다.',
+    '9하우스는 <strong>철학과 모험</strong>의 하우스입니다. 고등 교육, 해외 여행, 인생관·종교·철학, 진리 탐구를 나타냅니다.',
+    '10하우스는 <strong>커리어와 명성</strong>을 의미합니다. 사회적 지위, 직업적 목표, 야망, 세상에 남기고 싶은 유산을 나타냅니다.',
+    '11하우스는 <strong>우정과 이상</strong>의 공간입니다. 친구들·사회적 그룹, 미래 비전, 이상을 향한 꿈, 집단 활동을 담당합니다.',
+    '12하우스는 <strong>영성과 무의식</strong>의 하우스입니다. 숨겨진 자아, 카르마, 영적 성장, 고독 속에서 이루어지는 내면 작업입니다.'
+  ];
+
+  var PLANET_HOUSE_MSG = {
+    sun:     ['자아 정체성이 이 하우스 주제에서 가장 강하게 빛납니다. 이 영역에서 인정받을 때 삶의 의미를 느낍니다.',
+              '이 영역에서 빛나고 싶어합니다. 창의력과 리더십이 드러나는 공간입니다.'],
+    moon:    ['이 영역에서 감정적 안정을 추구합니다. 본능적으로 이 하우스 주제에 끌립니다.',
+              '감정이 이 하우스와 깊이 연결됩니다. 직관적으로 이 영역을 잘 이해합니다.'],
+    mercury: ['이 영역에서 생각하고 소통하는 것을 즐깁니다. 지적 활동이 활발합니다.',
+              '이 하우스 주제에 대해 많이 생각하고 이야기합니다.'],
+    venus:   ['이 영역에서 아름다움과 조화를 추구합니다. 즐거움과 사랑의 에너지가 넘칩니다.',
+              '이 하우스는 행운과 매력을 가져다 줍니다.'],
+    mars:    ['이 영역에서 에너지와 열정이 폭발합니다. 행동력이 강하지만 충돌이 생길 수 있습니다.',
+              '이 하우스 주제에 강한 의지와 추진력을 발휘합니다.'],
+    jupiter: ['이 영역에서 행운과 성장의 기회가 풍부합니다. 확장과 번영의 에너지가 흐릅니다.',
+              '이 하우스에서 낙관적이고 관대한 모습을 보입니다.'],
+    saturn:  ['이 영역에서 책임감이 강하지만 도전도 있습니다. 인내와 노력으로 마스터하게 됩니다.',
+              '이 하우스 주제에서 천천히, 그러나 확실하게 성장합니다.']
+  };
+
+  var PLANET_LABELS = {sun:'☀️태양', moon:'🌙달', mercury:'☿수성', venus:'♀금성', mars:'♂화성', jupiter:'♃목성', saturn:'♄토성'};
+
+  function getSignHouseDesc(hn, sign) {
+    var themes = [
+      sign.ko + '의 ' + sign.el + ' 에너지가 자아 표현에 스며들어, ' + sign.desc + ' 방식으로 자신을 드러냅니다.',
+      sign.ko + '의 영향으로 재물에 대한 태도가 ' + sign.desc + ' 성향을 보입니다. ' + sign.ruler + '이 이 영역을 지배합니다.',
+      sign.ko + ' 방식의 소통을 합니다. ' + sign.desc + ' 특성으로 정보를 주고받습니다.',
+      sign.ko + '의 에너지가 가정과 내면에 영향을 줍니다. ' + sign.desc + ' 성향의 안식처를 추구합니다.',
+      sign.ko + '의 창의성으로 삶을 즐깁니다. ' + sign.desc + ' 방식으로 기쁨을 표현합니다.',
+      sign.ko + ' 방식으로 건강과 일상을 관리합니다. ' + sign.desc + ' 루틴을 선호합니다.',
+      '파트너십에서 ' + sign.ko + '의 특성이 드러납니다. ' + sign.desc + ' 상대에게 끌리는 경향이 있습니다.',
+      sign.ko + '의 에너지가 변화와 재생 과정에 영향을 줍니다. ' + sign.desc + ' 방식으로 깊은 연결을 맺습니다.',
+      sign.ko + '의 철학적 관점으로 세상을 탐구합니다. ' + sign.desc + ' 방식의 지혜를 쌓아갑니다.',
+      '커리어에서 ' + sign.ko + '의 야망이 빛납니다. ' + sign.desc + ' 방식으로 사회적 목표를 추구합니다.',
+      sign.ko + '의 이상주의가 우정과 사회활동에 반영됩니다. ' + sign.desc + ' 친구들을 끌어당깁니다.',
+      sign.ko + '의 에너지가 영성과 무의식을 물들입니다. ' + sign.desc + ' 방식으로 내면을 치유합니다.'
+    ];
+    return themes[hn-1] || '';
+  }
+
+  var htHtml = '<p style="color:var(--gray);font-size:.82rem;margin-bottom:20px;">당신의 출생 차트에서 행성이 위치한 하우스만 표시합니다. 이 영역들이 당신 삶에서 특히 활성화된 공간입니다.</p>';
+
+  if (occupiedNums.length === 0) {
+    htHtml += '<p style="color:var(--gray);font-size:.85rem;">탄생 시간이 입력되지 않아 상세 하우스 분석이 어렵습니다.</p>';
+  } else {
+    occupiedNums.forEach(function(hn) {
+      var h = HOUSES[hn-1];
+      var signIdx = (data.planets.asc.idx + hn - 1) % 12;
+      var signKey = SKEYS[signIdx];
+      var sign = SD[signKey];
+      var pks = housePlanets[hn];
+
+      var planetTagsHtml = pks.map(function(pk) {
+        return '<div class="h-planet-tag" style="color:' + PC[pk] + ';border-color:' + PC[pk] + '40;background:' + PC[pk] + '15;">' +
+          PI[pk] + ' ' + PLANET_LABELS[pk].replace(/[☀️🌙☿♀♂♃♄]/g,'').trim() +
+        '</div>';
+      }).join('');
+
+      var planetDescs = pks.map(function(pk) {
+        return '<div style="display:flex;gap:8px;align-items:flex-start;padding:8px 0;border-bottom:1px solid rgba(255,255,255,0.04);">' +
+          '<span style="font-size:1rem;flex-shrink:0;color:' + PC[pk] + '">' + PI[pk] + '</span>' +
+          '<p style="margin:0;font-size:.84rem;line-height:1.8;"><strong style="color:' + PC[pk] + '">' + PLANET_LABELS[pk] + '</strong> — ' +
+          PLANET_HOUSE_MSG[pk][0] + '</p>' +
+          '</div>';
+      }).join('');
+
+      htHtml += '<div class="h-house-card">' +
+        '<div class="h-head">' +
+          '<div class="h-num-badge">' + hn + '</div>' +
+          '<div class="h-head-info">' +
+            '<div class="h-theme-txt">' + h.theme + '</div>' +
+            '<div class="h-sign-txt" style="color:' + sign.color + '">' + sign.sym + ' ' + sign.ko + ' (지배성: ' + sign.ruler + ')</div>' +
+          '</div>' +
+          '<div class="h-planets-strip">' + planetTagsHtml + '</div>' +
+        '</div>' +
+        '<div class="h-body">' +
+          '<p>' + HOUSE_BASE_DESC[hn-1] + '</p>' +
+          '<p>' + getSignHouseDesc(hn, sign) + '</p>' +
+          '<div style="margin:10px 0 4px;border-top:1px dashed rgba(139,92,246,0.15);padding-top:10px;">' + planetDescs + '</div>' +
+          '<div class="h-tip"><div class="tip-icon">💡</div><p><strong>핵심 메시지:</strong> ' + h.theme + ' 영역에서 ' + sign.ko + '의 에너지가 강하게 활성화되어 있습니다. ' + sign.fortune + '</p></div>' +
+        '</div>' +
+        '</div>';
+    });
+  }
+
+  document.getElementById('dHouse').innerHTML = htHtml;
+}
+
+/* ─── PDF ─── */
+document.getElementById('pdfBtn').addEventListener('click', function() {
+  if (!G) return;
+  if (typeof html2pdf === 'undefined') {
+    alert('PDF 라이브러리가 아직 로드 중입니다. 잠시 후 다시 시도해 주세요.');
+    return;
+  }
+  var data = G;
+  var sun  = SD[data.planets.sun.key];
+  var moon = SD[data.planets.moon.key];
+  var merc = SD[data.planets.mercury.key];
+  var asc  = SD[data.planets.asc.key];
+  var now  = new Date();
+  var dateStr = now.getFullYear() + '년 ' + (now.getMonth()+1) + '월 ' + now.getDate() + '일';
+
+  /* Chart SVG as data URL */
+  var tmpSvg = document.createElementNS('http://www.w3.org/2000/svg','svg');
+  tmpSvg.setAttribute('viewBox','0 0 370 370');
+  tmpSvg.setAttribute('width','280'); tmpSvg.setAttribute('height','280');
+  drawChart(tmpSvg, data.planets, data.planets.asc.lon);
+  var svgStr = new XMLSerializer().serializeToString(tmpSvg);
+  var svgB64 = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgStr)));
+
+  var nowJD = toJD(now.getFullYear(), now.getMonth()+1, now.getDate(), 12, 0, 9);
+  var tJup  = lonToSign(calcJupiter(nowJD));
+  var tSat  = lonToSign(calcSaturn(nowJD));
+  var tMars = lonToSign(calcMars(nowJD));
+  var tVen  = lonToSign(calcVenus(nowJD));
+  var tSn   = lonToSign(calcSun(nowJD));
+
+  var hRows = '';
+  for (var hi2 = 0; hi2 < 12; hi2++) {
+    var sk3 = SKEYS[(data.planets.asc.idx + hi2) % 12];
+    var s3  = SD[sk3];
+    hRows += '<tr><td style="color:#8B5CF6;font-weight:600;">' + HOUSES[hi2].n + '하우스</td>' +
+      '<td style="color:' + s3.color + '">' + s3.sym + ' ' + s3.ko + '</td>' +
+      '<td style="color:#64748b">' + HOUSES[hi2].theme + '</td>' +
+      '<td style="color:#475569;font-size:.76rem;">' + HOUSES[hi2].desc + '</td></tr>';
+  }
+
+  var months3 = '';
+  for (var mi2 = 0; mi2 < 3; mi2++) {
+    var md2 = new Date(now.getFullYear(), now.getMonth()+mi2, 1);
+    months3 += '<div style="padding:12px;border-radius:9px;background:rgba(6,182,212,.04);border:1px solid rgba(6,182,212,.18);text-align:center;">' +
+      '<div style="font-family:Cinzel,serif;font-size:.73rem;letter-spacing:2px;color:#67e8f9;margin-bottom:5px;">' + (md2.getMonth()+1) + '월</div>' +
+      '<div style="font-size:.9rem;margin-bottom:5px;">' + ['🌟🌟🌟🌟🌟','🌟🌟🌟🌟','🌟🌟🌟'][mi2] + '</div>' +
+      '<div style="font-size:.76rem;color:#94a3b8;line-height:1.6;">' + getMonthDesc(sun.el, mi2) + '</div>' +
+      '</div>';
+  }
+
+  /* PDF 생성을 위해 화면의 분석 내용을 직접 캡처하는 방식으로 변경 */
+  var root = document.getElementById('pdf-root');
+
+  /* 인라인 스타일 기반 PDF HTML (display:none 이슈 해결 - 모든 스타일 인라인) */
+  var pBg = '#ffffff';
+  var pTxt = '#334155';
+  var pW = '#0f172a';
+  var pP = '#4f46e5';
+  var pG = '#b45309';
+
+  var pageStyle = 'width:100%;box-sizing:border-box;background:#ffffff;color:'+pTxt+';font-family:Noto Sans KR,sans-serif;font-size:14px;';
+  var secStyle = 'font-family:Cinzel,serif;font-size:18px;font-weight:700;color:'+pW+';border-bottom:2px solid #e2e8f0;padding-bottom:8px;margin:32px 0 16px;letter-spacing:1px;page-break-after:avoid;';
+  var ssecStyle = 'font-size:14px;font-weight:700;color:'+pP+';margin:16px 0 8px;page-break-after:avoid;';
+  var pStyle = 'font-size:13px;line-height:1.7;color:'+pTxt+';margin:0 0 12px;';
+  var cardStyle = 'padding:14px;border-radius:10px;background:#f8fafc;border:1px solid #e2e8f0;page-break-inside:avoid;margin-bottom:10px;';
+  var ftStyle = 'margin-top:40px;padding-top:20px;border-top:1px solid #e2e8f0;text-align:center;font-size:12px;color:#94a3b8;page-break-inside:avoid;';
+
+  var html = '';
+
+  html += '<div style="'+pageStyle+'">';
+  
+  /* 헤더 & 차트 (페이지 1 상단) - 테이블 레이아웃으로 인쇄 안정성 확보 */
+  html += '<table style="width:100%;border-bottom:3px solid #0f172a;margin-bottom:30px;border-collapse:collapse;"><tr>';
+  html += '<td style="vertical-align:middle;padding-bottom:20px;">';
+  html += '<div style="font-family:Cinzel,serif;font-size:12px;letter-spacing:4px;color:'+pP+';margin-bottom:8px;">✦ HAM SSAM STAR ✦</div>';
+  html += '<div style="font-size:26px;font-weight:700;color:'+pW+';margin-bottom:8px;">'+data.name+' 님의<br>별자리 분석 보고서</div>';
+  html += '<div style="font-size:13px;color:#64748b;">'+data.birthDate+' | '+(data.birthTime||'시간 미상')+' | '+data.birthPlace+'</div>';
+  html += '</td>';
+  html += '<td style="vertical-align:middle;text-align:right;padding-bottom:20px;">';
+  html += '<div style="display:inline-block;padding:15px;border-radius:50%;background:linear-gradient(135deg,#07071e,#120c2e);box-shadow:0 10px 20px rgba(0,0,0,0.05);">';
+  html += '<img src="'+svgB64+'" width="180" height="180" style="display:block;"/>';
+  html += '</div></td></tr></table>';
+
+  /* 행성 요약 - Flexbox 사용 */
+  html += '<div style="display:flex;justify-content:space-between;margin-bottom:30px;">';
+  [{i:'☀️',l:'태양',v:sun},{i:'🌙',l:'달',v:moon},{i:'☿',l:'수성',v:merc},{i:'↑',l:'상승궁',v:asc}].forEach(function(p){
+    html += '<div style="flex:1;margin:0 5px;text-align:center;padding:14px 10px;border:1px solid #e2e8f0;border-radius:12px;background:#f8fafc;box-shadow:0 2px 5px rgba(0,0,0,0.02);">';
+    html += '<div style="font-size:20px;">'+p.i+'</div><div style="font-size:11px;color:#64748b;margin:4px 0;">'+p.l+'</div><div style="font-size:15px;font-weight:700;color:'+pW+';">'+p.v.ko+' '+p.v.sym+'</div></div>';
+  });
+  html += '</div>';
+  html += '<div style="'+secStyle+'">☀ 성격 분석</div>';
+  html += '<div style="'+ssecStyle+'">태양 '+sun.ko+' '+sun.sym+' — '+sun.desc+'</div>';
+  html += '<p style="'+pStyle+'">'+sun.personality+'</p>';
+  html += '<div style="'+ssecStyle+'">달 '+moon.ko+' — 내면의 자아</div>';
+  html += '<p style="'+pStyle+'">'+moon.personality+'</p>';
+  html += '<div style="'+ssecStyle+'">수성 '+merc.ko+' — 소통 방식</div>';
+  html += '<p style="'+pStyle+'">'+merc.ko+' 방식으로 소통하며 '+merc.desc+'합니다.</p>';
+  html += '<div style="'+ssecStyle+'">상승궁 '+asc.ko+' — 외적 이미지</div>';
+  html += '<p style="'+pStyle+'">타인에게는 '+asc.desc+'로 보입니다.</p>';
+  html += '<div style="'+secStyle+'">✦ 강점 &amp; 성장 포인트</div>';
+  html += '<div style="display:flex;margin:16px -5px;">';
+  html += '<div style="flex:1;margin:0 5px;'+cardStyle+'border-left:4px solid #10b981;"><div style="font-size:13px;font-weight:700;color:#047857;margin-bottom:8px;">✦ 강점</div><div style="font-size:13px;color:'+pTxt+';line-height:1.7;">'+sun.strengths.map(function(s){return '• '+s;}).join('<br>')+'</div></div>';
+  html += '<div style="flex:1;margin:0 5px;'+cardStyle+'border-left:4px solid #f43f5e;"><div style="font-size:13px;font-weight:700;color:#be123c;margin-bottom:8px;">◇ 성장 포인트</div><div style="font-size:13px;color:'+pTxt+';line-height:1.7;">'+sun.weaknesses.map(function(w){return '• '+w;}).join('<br>')+'</div></div>';
+  html += '</div>';
+
+  /* 운세 */
+  html += '<div style="'+secStyle+'">🌟 현재 운세</div>';
+  html += '<p style="'+pStyle+'">'+now.getFullYear()+'년 '+(now.getMonth()+1)+'월, '+data.name+'님의 '+sun.ko+' 에너지가 우주의 흐름과 만나는 시기입니다.</p>';
+  html += '<div style="display:flex;flex-wrap:wrap;margin:12px -5px;">';
+  [{t:'💼 직업 &amp; 재정',m:fMsg(CAREER_MSG,getAspect(sun.key,tJup.key)),a:fMsg(CAREER_ADVICE,getAspect(sun.key,tJup.key)),s:stars(sun.key,tJup.key),c:'#0284c7'},
+   {t:'💕 사랑 &amp; 관계',m:fMsg(LOVE_MSG,getAspect(sun.key,tVen.key)),a:fMsg(LOVE_ADVICE,getAspect(sun.key,tVen.key)),s:stars(sun.key,tVen.key),c:'#e11d48'},
+   {t:'🌿 건강 &amp; 에너지',m:fMsg(HEALTH_MSG,getAspect(sun.key,tMars.key)),a:fMsg(HEALTH_ADVICE,getAspect(sun.key,tMars.key)),s:stars(sun.key,tMars.key),c:'#059669'},
+   {t:'🧠 정신 &amp; 성장',m:fMsg(MIND_MSG,getAspect(sun.key,tSn.key)),a:fMsg(MIND_ADVICE,getAspect(sun.key,tSn.key)),s:stars(sun.key,tSn.key),c:'#7c3aed'}].forEach(function(f){
+    html += '<div style="width:48%;box-sizing:border-box;margin:0 1% 10px;'+cardStyle+'border-top:3px solid '+f.c+';">';
+    html += '<div style="font-size:14px;color:'+f.c+';font-weight:700;margin-bottom:6px;">'+f.t+'</div>';
+    html += '<p style="font-size:13px;color:'+pTxt+';line-height:1.6;margin:0 0 6px;">'+f.m+'</p>';
+    html += '<p style="font-size:12px;color:#0f172a;line-height:1.6;margin:0;font-weight:500;">💡 '+f.a+'</p>';
+    html += '<div style="font-size:12px;color:'+pG+';margin-top:6px;">'+f.s+'</div></div>';
+  });
+  html += '</div>';
+  html += '<div style="'+secStyle+'">📅 월별 운세 (3개월)</div>';
+  html += '<div style="display:flex;margin:16px -5px;">';
+  for (var mi2 = 0; mi2 < 3; mi2++) {
+    var md2 = new Date(now.getFullYear(), now.getMonth()+mi2, 1);
+    html += '<div style="flex:1;margin:0 5px;'+cardStyle+'text-align:center;">';
+    html += '<div style="font-family:Cinzel,serif;font-size:14px;font-weight:700;color:'+pP+';margin-bottom:6px;">' + (md2.getMonth()+1) + '월</div>';
+    html += '<div style="font-size:13px;margin-bottom:8px;">' + ['🌟🌟🌟🌟🌟','🌟🌟🌟🌟','🌟🌟🌟'][mi2] + '</div>';
+    html += '<div style="font-size:12px;color:#475569;line-height:1.6;">' + getMonthDesc(sun.el, mi2) + '</div>';
+    html += '</div>';
+  }
+  html += '</div>';
+
+  /* 관계 */
+  html += '<div style="'+secStyle+'">💫 인간관계 &amp; 궁합</div>';
+  html += '<p style="'+pStyle+'">'+sun.love+'</p>';
+  html += '<div style="'+ssecStyle+'">✦ 좋은 궁합</div>';
+  var pdfCompatGroups = groupSignsByReason(sun.compat, getCompatReason, sun.el);
+  pdfCompatGroups.forEach(function(g){
+    html += '<div style="'+cardStyle+'border-left:4px solid #10b981;">';
+    html += '<div style="font-size:14px;font-weight:700;color:#047857;margin-bottom:6px;">💚 ' + g.signs.join(', ') + '</div>';
+    html += '<p style="font-size:13px;color:'+pTxt+';line-height:1.6;margin:0;">'+g.reason+'</p></div>';
+  });
+  html += '<div style="'+ssecStyle+'">◇ 성장이 필요한 궁합</div>';
+  var pdfChallengeGroups = groupSignsByReason(sun.challenge, getChallengeReason, sun.el);
+  pdfChallengeGroups.forEach(function(g){
+    html += '<div style="'+cardStyle+'border-left:4px solid #f43f5e;">';
+    html += '<div style="font-size:14px;font-weight:700;color:#be123c;margin-bottom:6px;">⚡ ' + g.signs.join(', ') + '</div>';
+    html += '<p style="font-size:13px;color:'+pTxt+';line-height:1.6;margin:0;">'+g.reason+'</p></div>';
+  });
+  html += '<div style="'+cardStyle+'background:#f0f9ff;border-color:#bae6fd;margin-top:20px;">';
+  html += '<div style="font-size:14px;font-weight:700;color:#0369a1;margin-bottom:8px;">🧭 나에게 필요한 사람</div>';
+  html += '<p style="font-size:13px;color:#0f172a;line-height:1.7;margin:0;">'+getNeedPerson(sun)+'</p></div>';
+
+  /* 면책 조항 & 푸터 */
+  html += '<div style="margin-top:40px;padding:16px;border-radius:10px;background:#f1f5f9;text-align:center;">';
+  html += '<div style="font-size:12px;font-weight:700;color:#64748b;margin-bottom:6px;">⚠ 면책 안내</div>';
+  html += '<p style="font-size:11px;color:#94a3b8;line-height:1.6;margin:0;">본 보고서는 전통 서양 점성술에 기반한 참고 자료입니다. 절대적인 기준으로 사용하지 마세요.</p>';
+  html += '</div>';
+
+  html += '<div style="'+ftStyle+'"><span style="color:'+pP+';font-weight:700;">🔮 HAM SSAM STAR</span> | '+data.name+' 별자리 분석 보고서 | '+dateStr+'</div></div>';
+
+  var root = document.getElementById('pdf-root');
+  root.innerHTML = html;
+
+  /* 가장 완벽한 네이티브 렌더링 window.print() 호출 */
+  setTimeout(function() {
+    window.print();
+  }, 100);
+});
+
+/* ─── FORM SUBMIT ─── */
+document.getElementById('bForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+
+  var name  = document.getElementById('iName').value.trim();
+  var dateV = document.getElementById('iDate').value;
+  var timeV = document.getElementById('iTime').value || '12:00';
+  var place = document.getElementById('iPlace').value.trim();
+
+  if (!name || !dateV || !place) return;
+
+  var parts = dateV.split('-');
+  var yr = parseInt(parts[0], 10);
+  var mo = parseInt(parts[1], 10);
+  var dy = parseInt(parts[2], 10);
+  var tparts = timeV.split(':');
+  var hr = parseInt(tparts[0], 10);
+  var mn = parseInt(tparts[1], 10);
+
+  var city = findCity(place);
+  var jd   = toJD(yr, mo, dy, hr, mn, city.tz);
+
+  var sunL  = calcSun(jd);
+  var moonL = calcMoon(jd);
+  var mercL = calcMercury(jd);
+  var venL  = calcVenus(jd);
+  var marL  = calcMars(jd);
+  var jupL  = calcJupiter(jd);
+  var satL  = calcSaturn(jd);
+  var ascL  = calcASC(jd, city.lat, city.lon);
+
+  var planets = {
+    sun:     Object.assign(lonToSign(sunL),  {lon: sunL}),
+    moon:    Object.assign(lonToSign(moonL), {lon: moonL}),
+    mercury: Object.assign(lonToSign(mercL), {lon: mercL}),
+    venus:   Object.assign(lonToSign(venL),  {lon: venL}),
+    mars:    Object.assign(lonToSign(marL),  {lon: marL}),
+    jupiter: Object.assign(lonToSign(jupL),  {lon: jupL}),
+    saturn:  Object.assign(lonToSign(satL),  {lon: satL}),
+    asc:     Object.assign(lonToSign(ascL),  {lon: ascL})
+  };
+
+  G = { name:name, birthDate:dateV, birthTime:timeV, birthPlace:place, planets:planets, city:city };
+
+  /* Show loading */
+  var loading = document.getElementById('loading');
+  loading.style.display = 'flex';
+
+  setTimeout(function() {
+    loading.style.display = 'none';
+
+    document.getElementById('dName').textContent = name + '의 별자리 차트';
+    document.getElementById('dInfo').textContent = dateV + ' ' + timeV + ' | ' + place + ' (' + city.lat.toFixed(2) + '°N, ' + city.lon.toFixed(2) + '°E)';
+
+    /* Draw chart */
+    drawChart(document.getElementById('chartSvg'), planets, ascL);
+
+    /* Generate analysis */
+    generate(G);
+
+    /* Switch views */
+    document.getElementById('landing').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    window.scrollTo(0, 0);
+  }, 2000);
+});
+
+function goBack() {
+  document.getElementById('app').style.display = 'none';
+  document.getElementById('landing').style.display = 'flex';
+  window.scrollTo(0, 0);
+}
+</script>
 </body>
 </html>
